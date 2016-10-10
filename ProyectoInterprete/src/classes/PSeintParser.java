@@ -42,7 +42,7 @@ public class PSeintParser extends Parser {
 		RULE_stswitch = 34, RULE_casel = 35, RULE_stdefault = 36, RULE_l4 = 37, 
 		RULE_def = 38, RULE_idorv = 39, RULE_t8 = 40, RULE_l1 = 41, RULE_oasig = 42, 
 		RULE_idxorv = 43, RULE_t9 = 44, RULE_asig = 45, RULE_cls = 46, RULE_clean = 47, 
-		RULE_wait = 48, RULE_t3 = 49, RULE_time = 50, RULE_expr = 51, RULE_t7 = 52, 
+		RULE_nwait = 48, RULE_t3 = 49, RULE_time = 50, RULE_expr = 51, RULE_t7 = 52, 
 		RULE_parexpr = 53, RULE_t6 = 54, RULE_tok = 55, RULE_t5 = 56, RULE_cor = 57, 
 		RULE_op = 58, RULE_unop = 59, RULE_tipo = 60;
 	public static final String[] ruleNames = {
@@ -51,7 +51,7 @@ public class PSeintParser extends Parser {
 		"comid", "write", "l3", "read", "asigcall", "t4", "call", "opexpr", "array", 
 		"l2", "exprl", "stif", "elif", "stfor", "step", "stwhile", "dowhile", 
 		"stswitch", "casel", "stdefault", "l4", "def", "idorv", "t8", "l1", "oasig", 
-		"idxorv", "t9", "asig", "cls", "clean", "wait", "t3", "time", "expr", 
+		"idxorv", "t9", "asig", "cls", "clean", "nwait", "t3", "time", "expr", 
 		"t7", "parexpr", "t6", "tok", "t5", "cor", "op", "unop", "tipo"
 	};
 
@@ -1226,8 +1226,8 @@ public class PSeintParser extends Parser {
 		public ClsContext cls() {
 			return getRuleContext(ClsContext.class,0);
 		}
-		public WaitContext wait() {
-			return getRuleContext(WaitContext.class,0);
+		public NwaitContext nwait() {
+			return getRuleContext(NwaitContext.class,0);
 		}
 		public ComidContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -1301,7 +1301,7 @@ public class PSeintParser extends Parser {
 				enterOuterAlt(_localctx, 7);
 				{
 				setState(202);
-				wait();
+				nwait();
 				}
 				break;
 			default:
@@ -3156,33 +3156,33 @@ public class PSeintParser extends Parser {
 		return _localctx;
 	}
 
-	public static class WaitContext extends ParserRuleContext {
+	public static class NwaitContext extends ParserRuleContext {
 		public TerminalNode ESPERAR() { return getToken(PSeintParser.ESPERAR, 0); }
 		public T3Context t3() {
 			return getRuleContext(T3Context.class,0);
 		}
-		public WaitContext(ParserRuleContext parent, int invokingState) {
+		public NwaitContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_wait; }
+		@Override public int getRuleIndex() { return RULE_nwait; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof PSeintListener ) ((PSeintListener)listener).enterWait(this);
+			if ( listener instanceof PSeintListener ) ((PSeintListener)listener).enterNwait(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof PSeintListener ) ((PSeintListener)listener).exitWait(this);
+			if ( listener instanceof PSeintListener ) ((PSeintListener)listener).exitNwait(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof PSeintVisitor ) return ((PSeintVisitor<? extends T>)visitor).visitWait(this);
+			if ( visitor instanceof PSeintVisitor ) return ((PSeintVisitor<? extends T>)visitor).visitNwait(this);
 			else return visitor.visitChildren(this);
 		}
 	}
 
-	public final WaitContext wait() throws RecognitionException {
-		WaitContext _localctx = new WaitContext(_ctx, getState());
-		enterRule(_localctx, 96, RULE_wait);
+	public final NwaitContext nwait() throws RecognitionException {
+		NwaitContext _localctx = new NwaitContext(_ctx, getState());
+		enterRule(_localctx, 96, RULE_nwait);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{

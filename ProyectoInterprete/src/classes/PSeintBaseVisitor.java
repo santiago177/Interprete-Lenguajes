@@ -353,7 +353,7 @@ public class PSeintBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitWait(PSeintParser.WaitContext ctx) { return visitChildren(ctx); }
+	@Override public T visitNwait(PSeintParser.NwaitContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *

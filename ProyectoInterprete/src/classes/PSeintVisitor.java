@@ -299,11 +299,11 @@ public interface PSeintVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitClean(PSeintParser.CleanContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link PSeintParser#wait}.
+	 * Visit a parse tree produced by {@link PSeintParser#nwait}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitWait(PSeintParser.WaitContext ctx);
+	T visitNwait(PSeintParser.NwaitContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link PSeintParser#t3}.
 	 * @param ctx the parse tree

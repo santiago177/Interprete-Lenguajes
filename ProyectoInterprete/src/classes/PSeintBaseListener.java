@@ -592,13 +592,13 @@ public class PSeintBaseListener implements PSeintListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterWait(PSeintParser.WaitContext ctx) { }
+	@Override public void enterNwait(PSeintParser.NwaitContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitWait(PSeintParser.WaitContext ctx) { }
+	@Override public void exitNwait(PSeintParser.NwaitContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

@@ -488,15 +488,15 @@ public interface PSeintListener extends ParseTreeListener {
 	 */
 	void exitClean(PSeintParser.CleanContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link PSeintParser#wait}.
+	 * Enter a parse tree produced by {@link PSeintParser#nwait}.
 	 * @param ctx the parse tree
 	 */
-	void enterWait(PSeintParser.WaitContext ctx);
+	void enterNwait(PSeintParser.NwaitContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link PSeintParser#wait}.
+	 * Exit a parse tree produced by {@link PSeintParser#nwait}.
 	 * @param ctx the parse tree
 	 */
-	void exitWait(PSeintParser.WaitContext ctx);
+	void exitNwait(PSeintParser.NwaitContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link PSeintParser#t3}.
 	 * @param ctx the parse tree
