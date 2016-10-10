@@ -1,0 +1,3 @@
+proceso myprocess
+escribir 4;
+finproceso

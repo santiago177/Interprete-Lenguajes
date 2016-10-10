@@ -1,0 +1,61 @@
+S -> SUBPRL PROC id BLOCK ENDPROC
+SUBPRL -> SUBPR SUBPRL | EPSILON
+PROC -> proceso | algoritmo 
+SUBPROC -> subproceso | subalgoritmo | funcion
+ENDPROC -> finproceso | finalgoritmo 
+ENDSUBPROC -> finsubproceso | finsubalgoritmo | finfuncion
+BLOCK -> EPSILON | STORCOM L5
+L5 -> STORCOM L5 | EPSILON
+STORCOM -> STATEMENT | COM
+SUBPR -> SUBPROC RET ARGS BLOCK ENDSUBPROC
+RET -> id T1
+T1 -> token_asig id | EPSILON
+ARGS -> token_par_izq T2 | EPSILON
+ARGL -> id L1
+T2 -> token_par_der | ARGL token_par_der
+STATEMENT -> IF | WHILE | DOWHILE | SWITCH | FOR
+COM -> COMID token_pyc
+COMID -> DEF | ASIGCALL | WRITE | READ | ARRAY | CLS | WAIT
+WRITE -> escribir EXPR L3
+L3 -> token_coma EXPR L3 | EPSILON
+READ -> leer IDORV
+ASIGCALL -> id T9 T4
+T4 -> CALL | ASIG
+CALL -> token_par_izq OPEXPR L3 token_par_der | EPSILON
+OPEXPR -> EXPR | EPSILON
+ARRAY -> dimension id token_cor_izq EXPR EXPRL token_cor_der L2
+L2 -> token_coma id token_cor_izq EXPR EXPRL token_cor_der L2 | EPSILON
+EXPRL -> token_coma EXPR | EPSILON
+IF  -> si EXPR entonces BLOCK ELIF finsi
+ELIF -> sino BLOCK | EPSILON
+FOR -> para OASIG hasta EXPR STEP hacer BLOCK finpara
+STEP -> con paso EXPR | EPSILON
+WHILE -> mientras EXPR hacer BLOCK finmientras
+DOWHILE -> repetir BLOCK hasta que EXPR
+SWITCH -> segun EXPR hacer CASEL finsegun
+CASEL -> EPSILON | caso EXPR token_dosp BLOCK L4 DEFAULT
+DEFAULT -> de otro modo token_dosp BLOCK | EPSILON
+L4 -> caso EXPR token_dosp BLOCK L4 | EPSILON
+DEF -> definir IDORV como TIPO
+IDORV -> id T8
+T8 -> L1 | COR L1
+L1 -> token_coma IDORV | EPSILON
+OASIG -> IDXORV token_asig EXPR
+IDXORV -> id T9
+T9 -> COR | EPSILON 
+ASIG -> token_asig EXPR
+CLS -> CLEAN pantalla
+CLEAN -> borrar | limpiar
+WAIT -> esperar T3
+T3 -> tecla |  EXPR TIME
+TIME -> minutos | segundos | milisegundos
+EXPR -> TOK T7 | PAREXPR T6
+T7 -> OP EXPR | EPSILON
+PAREXPR -> token_par_izq EXPR token_par_der
+T6 -> OP EXPR | EPSILON
+TOK -> token_real | token_entero | token_cadena | id T5 | verdadero | falso | UNOP TOK
+T5 -> CALL | COR | EPSILON
+COR -> token_cor_izq EXPR EXPRL token_cor_der
+OP -> token_igual | token_dif | token_menor | token_mayor | token_menor_igual | token_mayor_igual | token_mas | token_menos | token_div | token_mul | token_mod | token_o | token_y | token_coma | token_pot
+UNOP -> token_neg | token_menos
+TIPO -> real | texto | numerico | logico | numero | cadena | entero | caracter
