@@ -1,3 +1,4 @@
 proceso myprocess
-escribir 4;
+escribir 'Hola';
+escribir "Mundo";
 finproceso
