@@ -148,6 +148,16 @@ public interface PSeintListener extends ParseTreeListener {
 	 */
 	void exitArgl(PSeintParser.ArglContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link PSeintParser#l10}.
+	 * @param ctx the parse tree
+	 */
+	void enterL10(PSeintParser.L10Context ctx);
+	/**
+	 * Exit a parse tree produced by {@link PSeintParser#l10}.
+	 * @param ctx the parse tree
+	 */
+	void exitL10(PSeintParser.L10Context ctx);
+	/**
 	 * Enter a parse tree produced by {@link PSeintParser#t2}.
 	 * @param ctx the parse tree
 	 */

@@ -95,6 +95,12 @@ public interface PSeintVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitArgl(PSeintParser.ArglContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link PSeintParser#l10}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitL10(PSeintParser.L10Context ctx);
+	/**
 	 * Visit a parse tree produced by {@link PSeintParser#t2}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

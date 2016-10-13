@@ -184,6 +184,18 @@ public class PSeintBaseListener implements PSeintListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterL10(PSeintParser.L10Context ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitL10(PSeintParser.L10Context ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterT2(PSeintParser.T2Context ctx) { }
 	/**
 	 * {@inheritDoc}

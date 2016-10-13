@@ -1,3 +1,7 @@
+subproceso ans <- foox(a, b)
+	escribir a, b;
+finsubproceso
+
 proceso myprocess
 escribir 'Hola';
 escribir "Mundo";
