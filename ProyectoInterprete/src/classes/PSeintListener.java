@@ -668,6 +668,16 @@ public interface PSeintListener extends ParseTreeListener {
 	 */
 	void exitTok(PSeintParser.TokContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link PSeintParser#number}.
+	 * @param ctx the parse tree
+	 */
+	void enterNumber(PSeintParser.NumberContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link PSeintParser#number}.
+	 * @param ctx the parse tree
+	 */
+	void exitNumber(PSeintParser.NumberContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link PSeintParser#t5}.
 	 * @param ctx the parse tree
 	 */

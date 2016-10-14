@@ -407,6 +407,12 @@ public interface PSeintVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitTok(PSeintParser.TokContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link PSeintParser#number}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitNumber(PSeintParser.NumberContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link PSeintParser#t5}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

@@ -17,11 +17,11 @@ public class PSeintLexer extends Lexer {
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		DE=1, HACER=2, TEXTO=3, TOKEN_MAYOR_IGUAL=4, FINMIENTRAS=5, FINSEGUN=6, 
-		MODO=7, FINPROCESO=8, TOKEN_PAR_IZQ=9, REPETIR=10, TOKEN_NEG=11, DEFINIR=12, 
-		COMO=13, TOKEN_DIV=14, TOKEN_MAYOR=15, PROCESO=16, VERDADERO=17, DIMENSION=18, 
-		TOKEN_COMA=19, LIMPIAR=20, FINSUBALGORITMO=21, QUE=22, BORRAR=23, TOKEN_MENOR=24, 
-		TOKEN_MUL=25, CASO=26, TOKEN_IGUAL=27, TOKEN_MENOS=28, TECLA=29, ENTERO=30, 
+		TOKEN_MENOS=1, DE=2, HACER=3, TEXTO=4, TOKEN_MAYOR_IGUAL=5, FINMIENTRAS=6, 
+		FINSEGUN=7, MODO=8, FINPROCESO=9, TOKEN_PAR_IZQ=10, REPETIR=11, TOKEN_NEG=12, 
+		DEFINIR=13, COMO=14, TOKEN_DIV=15, TOKEN_MAYOR=16, PROCESO=17, VERDADERO=18, 
+		DIMENSION=19, TOKEN_COMA=20, LIMPIAR=21, FINSUBALGORITMO=22, QUE=23, BORRAR=24, 
+		TOKEN_MENOR=25, TOKEN_MUL=26, CASO=27, TOKEN_IGUAL=28, TECLA=29, ENTERO=30, 
 		PASO=31, ENTONCES=32, SINO=33, MINUTOS=34, SUBALGORITMO=35, ESPERAR=36, 
 		REAL=37, SEGUN=38, FINPARA=39, TOKEN_MENOR_IGUAL=40, TOKEN_MAS=41, TOKEN_COR_IZQ=42, 
 		SUBPROCESO=43, LEER=44, PARA=45, FINFUNCION=46, TOKEN_ASIG=47, OTRO=48, 
@@ -36,11 +36,11 @@ public class PSeintLexer extends Lexer {
 	};
 
 	public static final String[] ruleNames = {
-		"DE", "HACER", "TEXTO", "TOKEN_MAYOR_IGUAL", "FINMIENTRAS", "FINSEGUN", 
-		"MODO", "FINPROCESO", "TOKEN_PAR_IZQ", "REPETIR", "TOKEN_NEG", "DEFINIR", 
-		"COMO", "TOKEN_DIV", "TOKEN_MAYOR", "PROCESO", "VERDADERO", "DIMENSION", 
-		"TOKEN_COMA", "LIMPIAR", "FINSUBALGORITMO", "QUE", "BORRAR", "TOKEN_MENOR", 
-		"TOKEN_MUL", "CASO", "TOKEN_IGUAL", "TOKEN_MENOS", "TECLA", "ENTERO", 
+		"TOKEN_MENOS", "DE", "HACER", "TEXTO", "TOKEN_MAYOR_IGUAL", "FINMIENTRAS", 
+		"FINSEGUN", "MODO", "FINPROCESO", "TOKEN_PAR_IZQ", "REPETIR", "TOKEN_NEG", 
+		"DEFINIR", "COMO", "TOKEN_DIV", "TOKEN_MAYOR", "PROCESO", "VERDADERO", 
+		"DIMENSION", "TOKEN_COMA", "LIMPIAR", "FINSUBALGORITMO", "QUE", "BORRAR", 
+		"TOKEN_MENOR", "TOKEN_MUL", "CASO", "TOKEN_IGUAL", "TECLA", "ENTERO", 
 		"PASO", "ENTONCES", "SINO", "MINUTOS", "SUBALGORITMO", "ESPERAR", "REAL", 
 		"SEGUN", "FINPARA", "TOKEN_MENOR_IGUAL", "TOKEN_MAS", "TOKEN_COR_IZQ", 
 		"SUBPROCESO", "LEER", "PARA", "FINFUNCION", "TOKEN_ASIG", "OTRO", "FUNCION", 
@@ -53,20 +53,20 @@ public class PSeintLexer extends Lexer {
 	};
 
 	private static final String[] _LITERAL_NAMES = {
-		null, null, null, null, "'>='", null, null, null, null, "'('", null, null, 
-		null, null, "'/'", "'>'", null, null, null, "','", null, null, null, null, 
-		"'<'", "'*'", null, "'='", "'-'", null, null, null, null, null, null, 
+		null, "'-'", null, null, null, "'>='", null, null, null, null, "'('", 
+		null, null, null, null, "'/'", "'>'", null, null, null, "','", null, null, 
+		null, null, "'<'", "'*'", null, "'='", null, null, null, null, null, null, 
 		null, null, null, null, null, "'<='", "'+'", "'['", null, null, null, 
 		null, "'<-'", null, null, null, null, null, null, "'^'", null, null, "')'", 
 		"'<>'", null, null, "'%'", null, null, null, "';'", null, null, null, 
 		null, null, "']'", null, null, "':'"
 	};
 	private static final String[] _SYMBOLIC_NAMES = {
-		null, "DE", "HACER", "TEXTO", "TOKEN_MAYOR_IGUAL", "FINMIENTRAS", "FINSEGUN", 
-		"MODO", "FINPROCESO", "TOKEN_PAR_IZQ", "REPETIR", "TOKEN_NEG", "DEFINIR", 
-		"COMO", "TOKEN_DIV", "TOKEN_MAYOR", "PROCESO", "VERDADERO", "DIMENSION", 
-		"TOKEN_COMA", "LIMPIAR", "FINSUBALGORITMO", "QUE", "BORRAR", "TOKEN_MENOR", 
-		"TOKEN_MUL", "CASO", "TOKEN_IGUAL", "TOKEN_MENOS", "TECLA", "ENTERO", 
+		null, "TOKEN_MENOS", "DE", "HACER", "TEXTO", "TOKEN_MAYOR_IGUAL", "FINMIENTRAS", 
+		"FINSEGUN", "MODO", "FINPROCESO", "TOKEN_PAR_IZQ", "REPETIR", "TOKEN_NEG", 
+		"DEFINIR", "COMO", "TOKEN_DIV", "TOKEN_MAYOR", "PROCESO", "VERDADERO", 
+		"DIMENSION", "TOKEN_COMA", "LIMPIAR", "FINSUBALGORITMO", "QUE", "BORRAR", 
+		"TOKEN_MENOR", "TOKEN_MUL", "CASO", "TOKEN_IGUAL", "TECLA", "ENTERO", 
 		"PASO", "ENTONCES", "SINO", "MINUTOS", "SUBALGORITMO", "ESPERAR", "REAL", 
 		"SEGUN", "FINPARA", "TOKEN_MENOR_IGUAL", "TOKEN_MAS", "TOKEN_COR_IZQ", 
 		"SUBPROCESO", "LEER", "PARA", "FINFUNCION", "TOKEN_ASIG", "OTRO", "FUNCION", 
@@ -141,18 +141,18 @@ public class PSeintLexer extends Lexer {
 		",\t,\4-\t-\4.\t.\4/\t/\4\60\t\60\4\61\t\61\4\62\t\62\4\63\t\63\4\64\t"+
 		"\64\4\65\t\65\4\66\t\66\4\67\t\67\48\t8\49\t9\4:\t:\4;\t;\4<\t<\4=\t="+
 		"\4>\t>\4?\t?\4@\t@\4A\tA\4B\tB\4C\tC\4D\tD\4E\tE\4F\tF\4G\tG\4H\tH\4I"+
-		"\tI\4J\tJ\4K\tK\4L\tL\4M\tM\4N\tN\4O\tO\4P\tP\4Q\tQ\4R\tR\3\2\3\2\3\2"+
-		"\3\3\3\3\3\3\3\3\3\3\3\3\3\4\3\4\3\4\3\4\3\4\3\4\3\5\3\5\3\5\3\6\3\6\3"+
-		"\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\7\3\7\3\7\3\7\3\7\3\7\3\7\3\7"+
-		"\3\7\3\b\3\b\3\b\3\b\3\b\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3"+
-		"\n\3\n\3\13\3\13\3\13\3\13\3\13\3\13\3\13\3\13\3\f\3\f\3\f\5\f\u00ea\n"+
-		"\f\3\r\3\r\3\r\3\r\3\r\3\r\3\r\3\r\3\16\3\16\3\16\3\16\3\16\3\17\3\17"+
-		"\3\20\3\20\3\21\3\21\3\21\3\21\3\21\3\21\3\21\3\21\3\22\3\22\3\22\3\22"+
-		"\3\22\3\22\3\22\3\22\3\22\3\22\3\23\3\23\3\23\3\23\3\23\3\23\3\23\3\23"+
-		"\3\23\3\23\3\24\3\24\3\25\3\25\3\25\3\25\3\25\3\25\3\25\3\25\3\26\3\26"+
-		"\3\26\3\26\3\26\3\26\3\26\3\26\3\26\3\26\3\26\3\26\3\26\3\26\3\26\3\26"+
-		"\3\27\3\27\3\27\3\27\3\30\3\30\3\30\3\30\3\30\3\30\3\30\3\31\3\31\3\32"+
-		"\3\32\3\33\3\33\3\33\3\33\3\33\3\34\3\34\3\35\3\35\3\36\3\36\3\36\3\36"+
+		"\tI\4J\tJ\4K\tK\4L\tL\4M\tM\4N\tN\4O\tO\4P\tP\4Q\tQ\4R\tR\3\2\3\2\3\3"+
+		"\3\3\3\3\3\4\3\4\3\4\3\4\3\4\3\4\3\5\3\5\3\5\3\5\3\5\3\5\3\6\3\6\3\6\3"+
+		"\7\3\7\3\7\3\7\3\7\3\7\3\7\3\7\3\7\3\7\3\7\3\7\3\b\3\b\3\b\3\b\3\b\3\b"+
+		"\3\b\3\b\3\b\3\t\3\t\3\t\3\t\3\t\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3"+
+		"\n\3\n\3\13\3\13\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\r\3\r\3\r\5\r\u00ec"+
+		"\n\r\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\17\3\17\3\17\3\17\3\17"+
+		"\3\20\3\20\3\21\3\21\3\22\3\22\3\22\3\22\3\22\3\22\3\22\3\22\3\23\3\23"+
+		"\3\23\3\23\3\23\3\23\3\23\3\23\3\23\3\23\3\24\3\24\3\24\3\24\3\24\3\24"+
+		"\3\24\3\24\3\24\3\24\3\25\3\25\3\26\3\26\3\26\3\26\3\26\3\26\3\26\3\26"+
+		"\3\27\3\27\3\27\3\27\3\27\3\27\3\27\3\27\3\27\3\27\3\27\3\27\3\27\3\27"+
+		"\3\27\3\27\3\30\3\30\3\30\3\30\3\31\3\31\3\31\3\31\3\31\3\31\3\31\3\32"+
+		"\3\32\3\33\3\33\3\34\3\34\3\34\3\34\3\34\3\35\3\35\3\36\3\36\3\36\3\36"+
 		"\3\36\3\36\3\37\3\37\3\37\3\37\3\37\3\37\3\37\3 \3 \3 \3 \3 \3!\3!\3!"+
 		"\3!\3!\3!\3!\3!\3!\3\"\3\"\3\"\3\"\3\"\3#\3#\3#\3#\3#\3#\3#\3#\3$\3$\3"+
 		"$\3$\3$\3$\3$\3$\3$\3$\3$\3$\3$\3%\3%\3%\3%\3%\3%\3%\3%\3&\3&\3&\3&\3"+
@@ -194,13 +194,13 @@ public class PSeintLexer extends Lexer {
 		"\2\2\u0089\3\2\2\2\2\u008b\3\2\2\2\2\u008d\3\2\2\2\2\u008f\3\2\2\2\2\u0091"+
 		"\3\2\2\2\2\u0093\3\2\2\2\2\u0095\3\2\2\2\2\u0097\3\2\2\2\2\u0099\3\2\2"+
 		"\2\2\u009b\3\2\2\2\2\u009d\3\2\2\2\2\u009f\3\2\2\2\2\u00a1\3\2\2\2\2\u00a3"+
-		"\3\2\2\2\3\u00a5\3\2\2\2\5\u00a8\3\2\2\2\7\u00ae\3\2\2\2\t\u00b4\3\2\2"+
-		"\2\13\u00b7\3\2\2\2\r\u00c3\3\2\2\2\17\u00cc\3\2\2\2\21\u00d1\3\2\2\2"+
-		"\23\u00dc\3\2\2\2\25\u00de\3\2\2\2\27\u00e9\3\2\2\2\31\u00eb\3\2\2\2\33"+
-		"\u00f3\3\2\2\2\35\u00f8\3\2\2\2\37\u00fa\3\2\2\2!\u00fc\3\2\2\2#\u0104"+
-		"\3\2\2\2%\u010e\3\2\2\2\'\u0118\3\2\2\2)\u011a\3\2\2\2+\u0122\3\2\2\2"+
-		"-\u0132\3\2\2\2/\u0136\3\2\2\2\61\u013d\3\2\2\2\63\u013f\3\2\2\2\65\u0141"+
-		"\3\2\2\2\67\u0146\3\2\2\29\u0148\3\2\2\2;\u014a\3\2\2\2=\u0150\3\2\2\2"+
+		"\3\2\2\2\3\u00a5\3\2\2\2\5\u00a7\3\2\2\2\7\u00aa\3\2\2\2\t\u00b0\3\2\2"+
+		"\2\13\u00b6\3\2\2\2\r\u00b9\3\2\2\2\17\u00c5\3\2\2\2\21\u00ce\3\2\2\2"+
+		"\23\u00d3\3\2\2\2\25\u00de\3\2\2\2\27\u00e0\3\2\2\2\31\u00eb\3\2\2\2\33"+
+		"\u00ed\3\2\2\2\35\u00f5\3\2\2\2\37\u00fa\3\2\2\2!\u00fc\3\2\2\2#\u00fe"+
+		"\3\2\2\2%\u0106\3\2\2\2\'\u0110\3\2\2\2)\u011a\3\2\2\2+\u011c\3\2\2\2"+
+		"-\u0124\3\2\2\2/\u0134\3\2\2\2\61\u0138\3\2\2\2\63\u013f\3\2\2\2\65\u0141"+
+		"\3\2\2\2\67\u0143\3\2\2\29\u0148\3\2\2\2;\u014a\3\2\2\2=\u0150\3\2\2\2"+
 		"?\u0157\3\2\2\2A\u015c\3\2\2\2C\u0165\3\2\2\2E\u016a\3\2\2\2G\u0172\3"+
 		"\2\2\2I\u017f\3\2\2\2K\u0187\3\2\2\2M\u018c\3\2\2\2O\u0192\3\2\2\2Q\u019a"+
 		"\3\2\2\2S\u019d\3\2\2\2U\u019f\3\2\2\2W\u01a1\3\2\2\2Y\u01ac\3\2\2\2["+
@@ -213,52 +213,52 @@ public class PSeintLexer extends Lexer {
 		"\2\2\u008f\u0259\3\2\2\2\u0091\u025b\3\2\2\2\u0093\u0262\3\2\2\2\u0095"+
 		"\u0269\3\2\2\2\u0097\u026b\3\2\2\2\u0099\u0274\3\2\2\2\u009b\u027a\3\2"+
 		"\2\2\u009d\u0284\3\2\2\2\u009f\u0289\3\2\2\2\u00a1\u0294\3\2\2\2\u00a3"+
-		"\u0299\3\2\2\2\u00a5\u00a6\t\2\2\2\u00a6\u00a7\t\3\2\2\u00a7\4\3\2\2\2"+
-		"\u00a8\u00a9\t\4\2\2\u00a9\u00aa\t\5\2\2\u00aa\u00ab\t\6\2\2\u00ab\u00ac"+
-		"\t\3\2\2\u00ac\u00ad\t\7\2\2\u00ad\6\3\2\2\2\u00ae\u00af\t\b\2\2\u00af"+
-		"\u00b0\t\3\2\2\u00b0\u00b1\t\t\2\2\u00b1\u00b2\t\b\2\2\u00b2\u00b3\t\n"+
-		"\2\2\u00b3\b\3\2\2\2\u00b4\u00b5\7@\2\2\u00b5\u00b6\7?\2\2\u00b6\n\3\2"+
-		"\2\2\u00b7\u00b8\t\13\2\2\u00b8\u00b9\t\f\2\2\u00b9\u00ba\t\r\2\2\u00ba"+
-		"\u00bb\t\16\2\2\u00bb\u00bc\t\f\2\2\u00bc\u00bd\t\3\2\2\u00bd\u00be\t"+
-		"\r\2\2\u00be\u00bf\t\b\2\2\u00bf\u00c0\t\7\2\2\u00c0\u00c1\t\5\2\2\u00c1"+
-		"\u00c2\t\17\2\2\u00c2\f\3\2\2\2\u00c3\u00c4\t\13\2\2\u00c4\u00c5\t\f\2"+
-		"\2\u00c5\u00c6\t\r\2\2\u00c6\u00c7\t\17\2\2\u00c7\u00c8\t\3\2\2\u00c8"+
-		"\u00c9\t\20\2\2\u00c9\u00ca\t\21\2\2\u00ca\u00cb\t\r\2\2\u00cb\16\3\2"+
-		"\2\2\u00cc\u00cd\t\16\2\2\u00cd\u00ce\t\n\2\2\u00ce\u00cf\t\2\2\2\u00cf"+
-		"\u00d0\t\n\2\2\u00d0\20\3\2\2\2\u00d1\u00d2\t\13\2\2\u00d2\u00d3\t\f\2"+
-		"\2\u00d3\u00d4\t\r\2\2\u00d4\u00d5\t\22\2\2\u00d5\u00d6\t\7\2\2\u00d6"+
-		"\u00d7\t\n\2\2\u00d7\u00d8\t\6\2\2\u00d8\u00d9\t\3\2\2\u00d9\u00da\t\17"+
-		"\2\2\u00da\u00db\t\n\2\2\u00db\22\3\2\2\2\u00dc\u00dd\7*\2\2\u00dd\24"+
-		"\3\2\2\2\u00de\u00df\t\7\2\2\u00df\u00e0\t\3\2\2\u00e0\u00e1\t\22\2\2"+
-		"\u00e1\u00e2\t\3\2\2\u00e2\u00e3\t\b\2\2\u00e3\u00e4\t\f\2\2\u00e4\u00e5"+
-		"\t\7\2\2\u00e5\26\3\2\2\2\u00e6\u00ea\7\u0080\2\2\u00e7\u00e8\7p\2\2\u00e8"+
-		"\u00ea\7q\2\2\u00e9\u00e6\3\2\2\2\u00e9\u00e7\3\2\2\2\u00ea\30\3\2\2\2"+
-		"\u00eb\u00ec\t\2\2\2\u00ec\u00ed\t\3\2\2\u00ed\u00ee\t\13\2\2\u00ee\u00ef"+
-		"\t\f\2\2\u00ef\u00f0\t\r\2\2\u00f0\u00f1\t\f\2\2\u00f1\u00f2\t\7\2\2\u00f2"+
-		"\32\3\2\2\2\u00f3\u00f4\t\6\2\2\u00f4\u00f5\t\n\2\2\u00f5\u00f6\t\16\2"+
-		"\2\u00f6\u00f7\t\n\2\2\u00f7\34\3\2\2\2\u00f8\u00f9\7\61\2\2\u00f9\36"+
-		"\3\2\2\2\u00fa\u00fb\7@\2\2\u00fb \3\2\2\2\u00fc\u00fd\t\22\2\2\u00fd"+
-		"\u00fe\t\7\2\2\u00fe\u00ff\t\n\2\2\u00ff\u0100\t\6\2\2\u0100\u0101\t\3"+
-		"\2\2\u0101\u0102\t\17\2\2\u0102\u0103\t\n\2\2\u0103\"\3\2\2\2\u0104\u0105"+
-		"\t\23\2\2\u0105\u0106\t\3\2\2\u0106\u0107\t\7\2\2\u0107\u0108\t\2\2\2"+
-		"\u0108\u0109\t\5\2\2\u0109\u010a\t\2\2\2\u010a\u010b\t\3\2\2\u010b\u010c"+
-		"\t\7\2\2\u010c\u010d\t\n\2\2\u010d$\3\2\2\2\u010e\u010f\t\2\2\2\u010f"+
-		"\u0110\t\f\2\2\u0110\u0111\t\16\2\2\u0111\u0112\t\3\2\2\u0112\u0113\t"+
-		"\r\2\2\u0113\u0114\t\17\2\2\u0114\u0115\t\f\2\2\u0115\u0116\t\n\2\2\u0116"+
-		"\u0117\t\r\2\2\u0117&\3\2\2\2\u0118\u0119\7.\2\2\u0119(\3\2\2\2\u011a"+
-		"\u011b\t\24\2\2\u011b\u011c\t\f\2\2\u011c\u011d\t\16\2\2\u011d\u011e\t"+
-		"\22\2\2\u011e\u011f\t\f\2\2\u011f\u0120\t\5\2\2\u0120\u0121\t\7\2\2\u0121"+
-		"*\3\2\2\2\u0122\u0123\t\13\2\2\u0123\u0124\t\f\2\2\u0124\u0125\t\r\2\2"+
-		"\u0125\u0126\t\17\2\2\u0126\u0127\t\21\2\2\u0127\u0128\t\25\2\2\u0128"+
-		"\u0129\t\5\2\2\u0129\u012a\t\24\2\2\u012a\u012b\t\20\2\2\u012b\u012c\t"+
-		"\n\2\2\u012c\u012d\t\7\2\2\u012d\u012e\t\f\2\2\u012e\u012f\t\b\2\2\u012f"+
-		"\u0130\t\16\2\2\u0130\u0131\t\n\2\2\u0131,\3\2\2\2\u0132\u0133\t\26\2"+
-		"\2\u0133\u0134\t\21\2\2\u0134\u0135\t\3\2\2\u0135.\3\2\2\2\u0136\u0137"+
-		"\t\25\2\2\u0137\u0138\t\n\2\2\u0138\u0139\t\7\2\2\u0139\u013a\t\7\2\2"+
-		"\u013a\u013b\t\5\2\2\u013b\u013c\t\7\2\2\u013c\60\3\2\2\2\u013d\u013e"+
-		"\7>\2\2\u013e\62\3\2\2\2\u013f\u0140\7,\2\2\u0140\64\3\2\2\2\u0141\u0142"+
-		"\t\6\2\2\u0142\u0143\t\5\2\2\u0143\u0144\t\17\2\2\u0144\u0145\t\n\2\2"+
-		"\u0145\66\3\2\2\2\u0146\u0147\7?\2\2\u01478\3\2\2\2\u0148\u0149\7/\2\2"+
+		"\u0299\3\2\2\2\u00a5\u00a6\7/\2\2\u00a6\4\3\2\2\2\u00a7\u00a8\t\2\2\2"+
+		"\u00a8\u00a9\t\3\2\2\u00a9\6\3\2\2\2\u00aa\u00ab\t\4\2\2\u00ab\u00ac\t"+
+		"\5\2\2\u00ac\u00ad\t\6\2\2\u00ad\u00ae\t\3\2\2\u00ae\u00af\t\7\2\2\u00af"+
+		"\b\3\2\2\2\u00b0\u00b1\t\b\2\2\u00b1\u00b2\t\3\2\2\u00b2\u00b3\t\t\2\2"+
+		"\u00b3\u00b4\t\b\2\2\u00b4\u00b5\t\n\2\2\u00b5\n\3\2\2\2\u00b6\u00b7\7"+
+		"@\2\2\u00b7\u00b8\7?\2\2\u00b8\f\3\2\2\2\u00b9\u00ba\t\13\2\2\u00ba\u00bb"+
+		"\t\f\2\2\u00bb\u00bc\t\r\2\2\u00bc\u00bd\t\16\2\2\u00bd\u00be\t\f\2\2"+
+		"\u00be\u00bf\t\3\2\2\u00bf\u00c0\t\r\2\2\u00c0\u00c1\t\b\2\2\u00c1\u00c2"+
+		"\t\7\2\2\u00c2\u00c3\t\5\2\2\u00c3\u00c4\t\17\2\2\u00c4\16\3\2\2\2\u00c5"+
+		"\u00c6\t\13\2\2\u00c6\u00c7\t\f\2\2\u00c7\u00c8\t\r\2\2\u00c8\u00c9\t"+
+		"\17\2\2\u00c9\u00ca\t\3\2\2\u00ca\u00cb\t\20\2\2\u00cb\u00cc\t\21\2\2"+
+		"\u00cc\u00cd\t\r\2\2\u00cd\20\3\2\2\2\u00ce\u00cf\t\16\2\2\u00cf\u00d0"+
+		"\t\n\2\2\u00d0\u00d1\t\2\2\2\u00d1\u00d2\t\n\2\2\u00d2\22\3\2\2\2\u00d3"+
+		"\u00d4\t\13\2\2\u00d4\u00d5\t\f\2\2\u00d5\u00d6\t\r\2\2\u00d6\u00d7\t"+
+		"\22\2\2\u00d7\u00d8\t\7\2\2\u00d8\u00d9\t\n\2\2\u00d9\u00da\t\6\2\2\u00da"+
+		"\u00db\t\3\2\2\u00db\u00dc\t\17\2\2\u00dc\u00dd\t\n\2\2\u00dd\24\3\2\2"+
+		"\2\u00de\u00df\7*\2\2\u00df\26\3\2\2\2\u00e0\u00e1\t\7\2\2\u00e1\u00e2"+
+		"\t\3\2\2\u00e2\u00e3\t\22\2\2\u00e3\u00e4\t\3\2\2\u00e4\u00e5\t\b\2\2"+
+		"\u00e5\u00e6\t\f\2\2\u00e6\u00e7\t\7\2\2\u00e7\30\3\2\2\2\u00e8\u00ec"+
+		"\7\u0080\2\2\u00e9\u00ea\7p\2\2\u00ea\u00ec\7q\2\2\u00eb\u00e8\3\2\2\2"+
+		"\u00eb\u00e9\3\2\2\2\u00ec\32\3\2\2\2\u00ed\u00ee\t\2\2\2\u00ee\u00ef"+
+		"\t\3\2\2\u00ef\u00f0\t\13\2\2\u00f0\u00f1\t\f\2\2\u00f1\u00f2\t\r\2\2"+
+		"\u00f2\u00f3\t\f\2\2\u00f3\u00f4\t\7\2\2\u00f4\34\3\2\2\2\u00f5\u00f6"+
+		"\t\6\2\2\u00f6\u00f7\t\n\2\2\u00f7\u00f8\t\16\2\2\u00f8\u00f9\t\n\2\2"+
+		"\u00f9\36\3\2\2\2\u00fa\u00fb\7\61\2\2\u00fb \3\2\2\2\u00fc\u00fd\7@\2"+
+		"\2\u00fd\"\3\2\2\2\u00fe\u00ff\t\22\2\2\u00ff\u0100\t\7\2\2\u0100\u0101"+
+		"\t\n\2\2\u0101\u0102\t\6\2\2\u0102\u0103\t\3\2\2\u0103\u0104\t\17\2\2"+
+		"\u0104\u0105\t\n\2\2\u0105$\3\2\2\2\u0106\u0107\t\23\2\2\u0107\u0108\t"+
+		"\3\2\2\u0108\u0109\t\7\2\2\u0109\u010a\t\2\2\2\u010a\u010b\t\5\2\2\u010b"+
+		"\u010c\t\2\2\2\u010c\u010d\t\3\2\2\u010d\u010e\t\7\2\2\u010e\u010f\t\n"+
+		"\2\2\u010f&\3\2\2\2\u0110\u0111\t\2\2\2\u0111\u0112\t\f\2\2\u0112\u0113"+
+		"\t\16\2\2\u0113\u0114\t\3\2\2\u0114\u0115\t\r\2\2\u0115\u0116\t\17\2\2"+
+		"\u0116\u0117\t\f\2\2\u0117\u0118\t\n\2\2\u0118\u0119\t\r\2\2\u0119(\3"+
+		"\2\2\2\u011a\u011b\7.\2\2\u011b*\3\2\2\2\u011c\u011d\t\24\2\2\u011d\u011e"+
+		"\t\f\2\2\u011e\u011f\t\16\2\2\u011f\u0120\t\22\2\2\u0120\u0121\t\f\2\2"+
+		"\u0121\u0122\t\5\2\2\u0122\u0123\t\7\2\2\u0123,\3\2\2\2\u0124\u0125\t"+
+		"\13\2\2\u0125\u0126\t\f\2\2\u0126\u0127\t\r\2\2\u0127\u0128\t\17\2\2\u0128"+
+		"\u0129\t\21\2\2\u0129\u012a\t\25\2\2\u012a\u012b\t\5\2\2\u012b\u012c\t"+
+		"\24\2\2\u012c\u012d\t\20\2\2\u012d\u012e\t\n\2\2\u012e\u012f\t\7\2\2\u012f"+
+		"\u0130\t\f\2\2\u0130\u0131\t\b\2\2\u0131\u0132\t\16\2\2\u0132\u0133\t"+
+		"\n\2\2\u0133.\3\2\2\2\u0134\u0135\t\26\2\2\u0135\u0136\t\21\2\2\u0136"+
+		"\u0137\t\3\2\2\u0137\60\3\2\2\2\u0138\u0139\t\25\2\2\u0139\u013a\t\n\2"+
+		"\2\u013a\u013b\t\7\2\2\u013b\u013c\t\7\2\2\u013c\u013d\t\5\2\2\u013d\u013e"+
+		"\t\7\2\2\u013e\62\3\2\2\2\u013f\u0140\7>\2\2\u0140\64\3\2\2\2\u0141\u0142"+
+		"\7,\2\2\u0142\66\3\2\2\2\u0143\u0144\t\6\2\2\u0144\u0145\t\5\2\2\u0145"+
+		"\u0146\t\17\2\2\u0146\u0147\t\n\2\2\u01478\3\2\2\2\u0148\u0149\7?\2\2"+
 		"\u0149:\3\2\2\2\u014a\u014b\t\b\2\2\u014b\u014c\t\3\2\2\u014c\u014d\t"+
 		"\6\2\2\u014d\u014e\t\24\2\2\u014e\u014f\t\5\2\2\u014f<\3\2\2\2\u0150\u0151"+
 		"\t\3\2\2\u0151\u0152\t\r\2\2\u0152\u0153\t\b\2\2\u0153\u0154\t\3\2\2\u0154"+
@@ -355,7 +355,7 @@ public class PSeintLexer extends Lexer {
 		"\2\2\u0294\u0293\3\2\2\2\u0295\u0296\3\2\2\2\u0296\u0294\3\2\2\2\u0296"+
 		"\u0297\3\2\2\2\u0297\u00a2\3\2\2\2\u0298\u029a\t\35\2\2\u0299\u0298\3"+
 		"\2\2\2\u029a\u029b\3\2\2\2\u029b\u0299\3\2\2\2\u029b\u029c\3\2\2\2\u029c"+
-		"\u029d\3\2\2\2\u029d\u029e\bR\2\2\u029e\u00a4\3\2\2\2\n\2\u00e9\u027e"+
+		"\u029d\3\2\2\2\u029d\u029e\bR\2\2\u029e\u00a4\3\2\2\2\n\2\u00eb\u027e"+
 		"\u0286\u028b\u0291\u0296\u029b\3\b\2\2";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
