@@ -130,10 +130,29 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 				//semanticError();
 			}
 			else {				
-				int l = (int)left.first;
-				int r = (int)right.first;
-				ans.first = l==r;
-				ans.second = "boolean";
+				if(left.second.equals("string")) {
+					if(!right.second.equals("string")){
+						//semanticError();
+					}
+					else {
+						ans.first = ((String)left.first).equals((String)right.first);
+						ans.second = "boolean";
+					}
+				}
+				else {
+					if(left.second.equals("real") || right.second.equals("real")) {
+						double l = left.first instanceof Integer?((Integer)left.first).doubleValue() : (double)left.first;
+						double r = right.first instanceof Integer?((Integer)right.first).doubleValue() : (double)right.first;;
+						ans.first = Math.abs(l-r) < precision;
+						ans.second = "boolean";
+					}
+					else {
+						int l = (int)left.first;
+						int r = (int)right.first;
+						ans.first = l==r;
+						ans.second = "boolean";
+					}
+				}
 			}
 		}
 		else if(ctx.TOKEN_DIF() != null) {
@@ -143,10 +162,29 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 				//semanticError();
 			}
 			else {
-				int l = (int)left.first;
-				int r = (int)right.first;
-				ans.first = l!=r;
-				ans.second = "boolean";
+				if(left.second.equals("string")) {
+					if(!right.second.equals("string")){
+						//semanticError();
+					}
+					else {
+						ans.first = !((String)left.first).equals((String)right.first);
+						ans.second = "boolean";
+					}
+				}
+				else {
+					if(left.second.equals("real") || right.second.equals("real")) {
+						double l = left.first instanceof Integer?((Integer)left.first).doubleValue() : (double)left.first;
+						double r = right.first instanceof Integer?((Integer)right.first).doubleValue() : (double)right.first;;
+						ans.first = Math.abs(l-r) > precision;
+						ans.second = "boolean";
+					}
+					else {
+						int l = (int)left.first;
+						int r = (int)right.first;
+						ans.first = l!=r;
+						ans.second = "boolean";
+					}
+				}
 			}
 		}
 		else {
@@ -165,10 +203,21 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 				//semanticError();
 			}
 			else {				
-				int l = (int)left.first;
-				int r = (int)right.first;
-				ans.first = l<r;
-				ans.second = "boolean";
+				if(left.second.equals("string")) {
+					if(!right.second.equals("string")){
+						//semanticError();
+					}
+					else {
+						ans.first = ((String)left.first).compareTo((String)right.first) < 0;
+						ans.second = "boolean";
+					}
+				}
+				else {
+					double l = left.first instanceof Integer?((Integer)left.first).doubleValue() : (double)left.first;
+					double r = right.first instanceof Integer?((Integer)right.first).doubleValue() : (double)right.first;;
+					ans.first = l<r;
+					ans.second = "boolean";
+				}
 			}
 		}
 		else if(ctx.TOKEN_MENOR_IGUAL() != null) {
@@ -177,11 +226,22 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 			if(left.second.equals("boolean") || right.second.equals("boolean")) {
 				//semanticError();
 			}
-			else {				
-				int l = (int)left.first;
-				int r = (int)right.first;
-				ans.first = l<=r;
-				ans.second = "boolean";
+			else {		
+				if(left.second.equals("string")) {
+					if(!right.second.equals("string")){
+						//semanticError();
+					}
+					else {
+						ans.first = ((String)left.first).compareTo((String)right.first) < 0 || ((String)left.first).equals((String)right.first);
+						ans.second = "boolean";
+					}
+				}
+				else {
+					double l = left.first instanceof Integer?((Integer)left.first).doubleValue() : (double)left.first;
+					double r = right.first instanceof Integer?((Integer)right.first).doubleValue() : (double)right.first;;
+					ans.first = l<=r;
+					ans.second = "boolean";
+				}
 			}
 		}
 		else if(ctx.TOKEN_MAYOR()!= null) {
@@ -191,10 +251,21 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 				//semanticError();
 			}
 			else {				
-				int l = (int)left.first;
-				int r = (int)right.first;
-				ans.first = l>r;
-				ans.second = "boolean";
+				if(left.second.equals("string")) {
+					if(!right.second.equals("string")){
+						//semanticError();
+					}
+					else {
+						ans.first = ((String)left.first).compareTo((String)right.first) > 0;
+						ans.second = "boolean";
+					}
+				}
+				else {
+					double l = left.first instanceof Integer?((Integer)left.first).doubleValue() : (double)left.first;
+					double r = right.first instanceof Integer?((Integer)right.first).doubleValue() : (double)right.first;;
+					ans.first = l>r;
+					ans.second = "boolean";
+				}
 			}
 		}
 		else if(ctx.TOKEN_MAYOR_IGUAL() != null) {
@@ -204,10 +275,21 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 				//semanticError();
 			}
 			else {				
-				int l = (int)left.first;
-				int r = (int)right.first;
-				ans.first = l>=r;
-				ans.second = "boolean";
+				if(left.second.equals("string")) {
+					if(!right.second.equals("string")){
+						//semanticError();
+					}
+					else {
+						ans.first = ((String)left.first).compareTo((String)right.first) > 0 || ((String)left.first).equals((String)right.first);
+						ans.second = "boolean";
+					}
+				}
+				else {
+					double l = left.first instanceof Integer?((Integer)left.first).doubleValue() : (double)left.first;
+					double r = right.first instanceof Integer?((Integer)right.first).doubleValue() : (double)right.first;;
+					ans.first = l>=r;
+					ans.second = "boolean";
+				}
 			}
 		}
 		else {
