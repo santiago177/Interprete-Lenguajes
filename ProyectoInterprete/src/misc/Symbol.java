@@ -4,6 +4,7 @@ public class Symbol {
 	public String id;
 	public String type;
 	public Object value;
+	public boolean array;
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -42,5 +43,8 @@ public class Symbol {
 	public Symbol(String id, String type) {
 		this.id = id;
 		this.type = type;	
+	}
+	public Symbol() {
+		array = false;
 	}
 }

@@ -1,3 +1,8 @@
-pRoCEsO myprocess
-escribiR "a">"a";
+SubProceso z <- f ( x )
+    Definir z Como Real;
+    z <- 2*x + 4 + g(x);
+FinSubProceso
+ 
+ Proceso sin_titulo
+    Escribir f(5);
 FinProceso

@@ -158,16 +158,6 @@ public interface PSeintListener extends ParseTreeListener {
 	 */
 	void exitL10(PSeintParser.L10Context ctx);
 	/**
-	 * Enter a parse tree produced by {@link PSeintParser#t2}.
-	 * @param ctx the parse tree
-	 */
-	void enterT2(PSeintParser.T2Context ctx);
-	/**
-	 * Exit a parse tree produced by {@link PSeintParser#t2}.
-	 * @param ctx the parse tree
-	 */
-	void exitT2(PSeintParser.T2Context ctx);
-	/**
 	 * Enter a parse tree produced by {@link PSeintParser#statement}.
 	 * @param ctx the parse tree
 	 */
@@ -228,26 +218,6 @@ public interface PSeintListener extends ParseTreeListener {
 	 */
 	void exitRead(PSeintParser.ReadContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link PSeintParser#asigcall}.
-	 * @param ctx the parse tree
-	 */
-	void enterAsigcall(PSeintParser.AsigcallContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link PSeintParser#asigcall}.
-	 * @param ctx the parse tree
-	 */
-	void exitAsigcall(PSeintParser.AsigcallContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link PSeintParser#t4}.
-	 * @param ctx the parse tree
-	 */
-	void enterT4(PSeintParser.T4Context ctx);
-	/**
-	 * Exit a parse tree produced by {@link PSeintParser#t4}.
-	 * @param ctx the parse tree
-	 */
-	void exitT4(PSeintParser.T4Context ctx);
-	/**
 	 * Enter a parse tree produced by {@link PSeintParser#call}.
 	 * @param ctx the parse tree
 	 */
@@ -258,25 +228,15 @@ public interface PSeintListener extends ParseTreeListener {
 	 */
 	void exitCall(PSeintParser.CallContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link PSeintParser#opexpr}.
+	 * Enter a parse tree produced by {@link PSeintParser#funcexprl}.
 	 * @param ctx the parse tree
 	 */
-	void enterOpexpr(PSeintParser.OpexprContext ctx);
+	void enterFuncexprl(PSeintParser.FuncexprlContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link PSeintParser#opexpr}.
+	 * Exit a parse tree produced by {@link PSeintParser#funcexprl}.
 	 * @param ctx the parse tree
 	 */
-	void exitOpexpr(PSeintParser.OpexprContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link PSeintParser#l11}.
-	 * @param ctx the parse tree
-	 */
-	void enterL11(PSeintParser.L11Context ctx);
-	/**
-	 * Exit a parse tree produced by {@link PSeintParser#l11}.
-	 * @param ctx the parse tree
-	 */
-	void exitL11(PSeintParser.L11Context ctx);
+	void exitFuncexprl(PSeintParser.FuncexprlContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link PSeintParser#array}.
 	 * @param ctx the parse tree
@@ -417,6 +377,16 @@ public interface PSeintListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitDef(PSeintParser.DefContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link PSeintParser#idl}.
+	 * @param ctx the parse tree
+	 */
+	void enterIdl(PSeintParser.IdlContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link PSeintParser#idl}.
+	 * @param ctx the parse tree
+	 */
+	void exitIdl(PSeintParser.IdlContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link PSeintParser#idorv}.
 	 * @param ctx the parse tree
@@ -678,15 +648,15 @@ public interface PSeintListener extends ParseTreeListener {
 	 */
 	void exitNumber(PSeintParser.NumberContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link PSeintParser#t5}.
+	 * Enter a parse tree produced by {@link PSeintParser#idarray}.
 	 * @param ctx the parse tree
 	 */
-	void enterT5(PSeintParser.T5Context ctx);
+	void enterIdarray(PSeintParser.IdarrayContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link PSeintParser#t5}.
+	 * Exit a parse tree produced by {@link PSeintParser#idarray}.
 	 * @param ctx the parse tree
 	 */
-	void exitT5(PSeintParser.T5Context ctx);
+	void exitIdarray(PSeintParser.IdarrayContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link PSeintParser#cor}.
 	 * @param ctx the parse tree

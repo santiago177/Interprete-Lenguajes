@@ -101,12 +101,6 @@ public interface PSeintVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitL10(PSeintParser.L10Context ctx);
 	/**
-	 * Visit a parse tree produced by {@link PSeintParser#t2}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitT2(PSeintParser.T2Context ctx);
-	/**
 	 * Visit a parse tree produced by {@link PSeintParser#statement}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -143,35 +137,17 @@ public interface PSeintVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitRead(PSeintParser.ReadContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link PSeintParser#asigcall}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitAsigcall(PSeintParser.AsigcallContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link PSeintParser#t4}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitT4(PSeintParser.T4Context ctx);
-	/**
 	 * Visit a parse tree produced by {@link PSeintParser#call}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitCall(PSeintParser.CallContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link PSeintParser#opexpr}.
+	 * Visit a parse tree produced by {@link PSeintParser#funcexprl}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitOpexpr(PSeintParser.OpexprContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link PSeintParser#l11}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitL11(PSeintParser.L11Context ctx);
+	T visitFuncexprl(PSeintParser.FuncexprlContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link PSeintParser#array}.
 	 * @param ctx the parse tree
@@ -256,6 +232,12 @@ public interface PSeintVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitDef(PSeintParser.DefContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link PSeintParser#idl}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitIdl(PSeintParser.IdlContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link PSeintParser#idorv}.
 	 * @param ctx the parse tree
@@ -413,11 +395,11 @@ public interface PSeintVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitNumber(PSeintParser.NumberContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link PSeintParser#t5}.
+	 * Visit a parse tree produced by {@link PSeintParser#idarray}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitT5(PSeintParser.T5Context ctx);
+	T visitIdarray(PSeintParser.IdarrayContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link PSeintParser#cor}.
 	 * @param ctx the parse tree

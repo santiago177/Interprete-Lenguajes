@@ -1,9 +1,11 @@
 package classes;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Stack;
 
+import misc.Function;
 import misc.Symbol;
 
 class Pair<J, K> {
@@ -24,6 +26,9 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 	static HashMap<String, Symbol> functions = new HashMap<>();
 	static HashMap<String, HashMap<String, Symbol>> tables = new HashMap<>();
 	static Stack<String> currentContext = new Stack<>();
+	static boolean isVoid = true;
+	static Pair<Object, String> returnValue = null;
+	static String currentType;
 	
 	static void semanticError(int line, int col) {
 		System.exit(-1);
@@ -31,6 +36,34 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 	
 	static boolean isQuote(char c) {
 		return c == '\'' || c == '"';
+	}
+	
+	@Override
+	public T visitArgs(PSeintParser.ArgsContext ctx) {
+		ArrayList<Symbol> args = (ArrayList<Symbol>) visitArgl(ctx.argl());
+		return (T)args;
+	}
+	
+	@Override
+	public T visitArgl(PSeintParser.ArglContext ctx) {
+		ArrayList<Symbol> args = new ArrayList<>();
+		if(ctx != null) {
+			Symbol sy = new Symbol(ctx.ID().getText(), null);
+			args = (ArrayList<Symbol>)visitL10(ctx.l10());
+			args.add(sy);
+		}
+		return (T)args;
+	}
+	
+	@Override
+	public T visitL10(PSeintParser.L10Context ctx) {
+		ArrayList<Symbol> args = new ArrayList<>();
+		if(ctx.ID() != null) {
+			Symbol sy = new Symbol(ctx.ID().getText(), null);
+			args = (ArrayList<Symbol>)visitL10(ctx.l10());
+			args.add(sy);
+		}
+		return (T)args;
 	}
 	
 	@Override
@@ -43,10 +76,11 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 				int col = ctx.ID(0).getSymbol().getCharPositionInLine() + 1;
 				semanticError(line, col);
 			} else {
-				Symbol func = new Symbol(name, "function");
-				func.value = ctx.block();
+				Function func = new Function(name, "function");
+				func.block = ctx.block();
+				func.args = (ArrayList<Symbol>)visitArgs(ctx.args());
 				functions.put(name, func);
-				tables.put(name, new HashMap<>());
+				tables.put(name, null);
 				HashMap<String, Symbol> table = tables.get(name);
 			}
 		} else {
@@ -56,14 +90,17 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 				int col = ctx.ID(1).getSymbol().getCharPositionInLine() + 1;
 				semanticError(line, col);
 			} else {
-				Symbol func = new Symbol(name, "function");
+				Function func = new Function(name, "function");
+				func.returnId = ctx.ID(0).getText();
 				func.value = ctx.block();
+				func.args = (ArrayList<Symbol>)visitArgs(ctx.args());
 				functions.put(name, func);
 				tables.put(name, new HashMap<>());
+				currentContext.push(main);
 				HashMap<String, Symbol> table = tables.get(name);
 			}
 		}
-		return visitChildren(ctx);
+		return null;
 	}
 
 	@Override
@@ -73,7 +110,7 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 		Symbol func = new Symbol(main, "function");
 		func.value = ctx.block();
 		functions.put(main, func);
-		return visitChildren(ctx);
+		return null;
 	}
 	
 	@Override
@@ -471,6 +508,124 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 	}		
 	
 	@Override
+	public T visitIdl(PSeintParser.IdlContext ctx) {
+		ArrayList<Symbol> list = new ArrayList<>();
+		if(ctx != null) {
+			list = (ArrayList<Symbol>)visitIdl(ctx.idl());
+			list.add(new Symbol(ctx.ID().getText(), currentType));
+		}
+		return (T)list;
+	}
+	
+	@Override
+	public T visitDef(PSeintParser.DefContext ctx) {
+		String id = ctx.ID().getText();
+		String type = ctx.tipo().getText();
+		currentType = type;
+		String funcname = currentContext.peek();
+		HashMap<String, Symbol> table = tables.get(funcname);
+		ArrayList<Symbol> variables = (ArrayList<Symbol>)visitIdl(ctx.idl());
+		variables.add(new Symbol(id, type));
+		for(Symbol s: variables) {
+			if(table.containsKey(s.id)) {
+				//semanticError();
+			}
+			else {
+				table.put(s.id, new Symbol(s.id, s.type));
+			}
+		}
+		return null;
+	}
+	
+	@Override
+	public T visitComid(PSeintParser.ComidContext ctx) {
+		if(ctx.def() != null) {
+			
+		}
+		else if(ctx.asig() != null) {
+			
+		}
+		else if(ctx.call() != null) {
+			
+		} 
+		else if (ctx.write() != null) {
+
+		} 
+		else if (ctx.read() != null) {
+
+		} 
+		else if (ctx.array() != null) {
+
+		} 
+		else if (ctx.cls() != null) {
+
+		}
+		else if(ctx.spwait() != null) {
+			
+		}
+		else {
+			System.out.println("error fatal");
+		}
+		return null;
+	}
+	
+	@Override
+	public T visitCom(PSeintParser.ComContext ctx) {
+		visitComid(ctx.comid());
+		return null;
+	}
+	
+	@Override
+	public T visitStatement(PSeintParser.StatementContext ctx) {
+		return visitChildren(ctx);
+	}
+	
+	@Override
+	public T visitL5(PSeintParser.L5Context ctx) {
+		return visitChildren(ctx);
+	}
+	
+	@Override
+	public T visitStorcom(PSeintParser.StorcomContext ctx) {
+		if(ctx.statement() != null) {
+			visitStatement(ctx.statement());
+		}
+		else {
+			visitCom(ctx.com());
+		}
+		return null;
+	}
+	
+	@Override
+	public T visitBlock(PSeintParser.BlockContext ctx) {
+		Pair<Object, String> ans = new Pair<>();
+		if(ctx.storcom() != null) {
+			visitStorcom(ctx.storcom());
+		}
+		return (T)ans;
+	}
+	
+	@Override
+	public T visitCall(PSeintParser.CallContext ctx) {
+		Pair<Object, String> ans = new Pair<>();
+		String name = ctx.ID().getText();
+		if(functions.containsKey(name)) {
+			tables.put(name, new HashMap<>());
+			Function func = (Function)functions.get(name);
+			ans = (Pair)visitBlock(func.block);
+			currentContext.push(name);
+			HashMap<String, Symbol> table = tables.get(name);
+			for(Symbol s: func.args) {
+				table.put(s.id, s);
+			}
+		}
+		else {
+			//semanticError();
+		}
+		return (T)ans;
+	}
+	
+	@Override
 	public T visitTok(PSeintParser.TokContext ctx) {
 		Pair<Object, String> ans = new Pair();
 		if(ctx.number() != null && ctx.TOKEN_MENOS() == null) {
@@ -489,6 +644,35 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 			ans.second = "string";
 		}
 		else if(ctx.ID() != null) {
+		}
+		else if(ctx.call() != null) {
+			Pair<Object, String> val = (Pair)visitCall(ctx.call());
+			if(val.second.equals("string")) {
+				ans.first = (String)val.first;
+				ans.second = val.second;
+			}
+			else if(val.second.equals("int")) {
+				ans.first = (int)val.first;
+				ans.second = val.second;
+			}
+			else if(val.second.equals("real")) {
+				ans.first = (double)val.first;
+				ans.second = val.second;
+			}
+			else if(val.second.equals("boolean")){
+				ans.first = (boolean)val.first;
+				ans.second = val.second;
+			}
+			else if(val.second.equals("char")){
+				ans.first = (char)val.first;
+				ans.second = val.second;
+			}
+			else {
+				System.out.println("error fatal");
+			}
+		}
+		else if(ctx.idarray() != null) {
+			
 		}
 		else if(ctx.VERDADERO() != null) {
 			ans.first = true;
