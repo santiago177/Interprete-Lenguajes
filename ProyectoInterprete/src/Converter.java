@@ -1,7 +1,14 @@
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.StringTokenizer;
+
+import javax.annotation.processing.Filer;
+import javax.lang.model.element.Element;
+import javax.tools.FileObject;
+import javax.tools.JavaFileObject;
+import javax.tools.JavaFileManager.Location;
 
 public class Converter {
 	static HashMap<String, String> special = new HashMap<>();
@@ -11,7 +18,8 @@ public class Converter {
 		special.put("for", "stfor");
 		special.put("while", "stwhile");
 		special.put("switch", "stswitch");
-		special.put("default", "stdefault");		
+		special.put("default", "stdefault");
+		special.put("wait", "spwait");	
 	}
 	
 	static String toLower(String s) {
@@ -31,11 +39,17 @@ public class Converter {
 	}
 
 	public static void main(String[] args) throws IOException{		
-		File f = new File("old_grammar.in"), nf = new File("PSeint.g");
+		File f = new File("old_grammar.in"), nf = new File("newPSeint.g"), sp = new File("special.txt");
 		PrintWriter pw = new PrintWriter(nf);
-		BufferedReader bf = new BufferedReader(new FileReader(f));
+		BufferedReader bf = new BufferedReader(new FileReader(f)), sbf = new BufferedReader(new FileReader(sp));
 		HashMap<String, String> terminals = new HashMap<>();
+		HashMap<String, String> nspecial = new HashMap<>();
 		String line;
+		while((line = sbf.readLine()) != null) {
+			String[] words = line.split(" [:] ");
+			String token = words[0].trim();
+			nspecial.put(token, words[1]);
+		}
 		pw.println("grammar PSeint;\n");
 		while((line = bf.readLine()) != null) {
 			String[] division = line.split("->");
@@ -75,7 +89,16 @@ public class Converter {
 			pw.println();			
 		}
 		for(String key: terminals.keySet()) {
-			pw.printf("%s : '%s';\n", key, terminals.get(key));
+			if(!nspecial.containsKey(key)) {
+				String rule = "";
+				char term[] = terminals.get(key).toCharArray();
+				for(char c: term) {
+					rule += String.format("[%c%c]", c, Character.toUpperCase(c));
+				}
+				pw.printf("%s : %s;\n", key, rule);
+			}
+			else
+				pw.printf("%s : %s\n", key, nspecial.get(key));
 		}
 		pw.printf("WS		: [ \\t\\r\\n]+ -> skip ;");
 		pw.close();

@@ -48,10 +48,6 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 				functions.put(name, func);
 				tables.put(name, new HashMap<>());
 				HashMap<String, Symbol> table = tables.get(name);
-				if (ctx.TOKEN_ASIG() != null) {
-					System.out.printf("%s has return value\n", name);
-					table.put(ctx.ID(0).getText(), new Symbol(ctx.ID(1).getText(), "open"));
-				}
 			}
 		}
 		return visitChildren(ctx);
@@ -66,7 +62,12 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 		functions.put(main, func);
 		return visitChildren(ctx);
 	}
-
+	
+	@Override
+	public T visitExpr(PSeintParser.ExprContext ctx) {
+		return visitChildren(ctx);
+	}
+	
 	@Override
 	public T visitWrite(PSeintParser.WriteContext ctx) {
 		//System.out.println("at write");
@@ -77,3 +78,12 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 		return visitChildren(ctx);
 	}
 }
+
+
+
+
+
+
+
+
+

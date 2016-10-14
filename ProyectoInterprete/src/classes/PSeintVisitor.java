@@ -167,6 +167,12 @@ public interface PSeintVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitOpexpr(PSeintParser.OpexprContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link PSeintParser#l11}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitL11(PSeintParser.L11Context ctx);
+	/**
 	 * Visit a parse tree produced by {@link PSeintParser#array}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -305,11 +311,11 @@ public interface PSeintVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitClean(PSeintParser.CleanContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link PSeintParser#nwait}.
+	 * Visit a parse tree produced by {@link PSeintParser#spwait}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitNwait(PSeintParser.NwaitContext ctx);
+	T visitSpwait(PSeintParser.SpwaitContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link PSeintParser#t3}.
 	 * @param ctx the parse tree
@@ -328,6 +334,54 @@ public interface PSeintVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitExpr(PSeintParser.ExprContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link PSeintParser#eA}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitEA(PSeintParser.EAContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link PSeintParser#eB}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitEB(PSeintParser.EBContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link PSeintParser#eC}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitEC(PSeintParser.ECContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link PSeintParser#eD}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitED(PSeintParser.EDContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link PSeintParser#eE}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitEE(PSeintParser.EEContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link PSeintParser#eF}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitEF(PSeintParser.EFContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link PSeintParser#eG}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitEG(PSeintParser.EGContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link PSeintParser#eH}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitEH(PSeintParser.EHContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link PSeintParser#t7}.
 	 * @param ctx the parse tree
