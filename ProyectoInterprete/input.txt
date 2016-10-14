@@ -1,4 +1,3 @@
 pRoCEsO myprocess
-escribir 'Hola';
-escribir "Mundo";
+escribiR falso|falso;
 FinProceso
