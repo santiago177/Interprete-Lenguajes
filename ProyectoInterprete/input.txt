@@ -1,8 +1,3 @@
-SubProceso z <- f ( x )
-    Definir z Como Real;
-    z <- 2*x + 4 + g(x);
-FinSubProceso
- 
- Proceso sin_titulo
-    Escribir f(5);
+Proceso sin_titulo
+    Escribir "hola", 2^2^(4-8);
 FinProceso

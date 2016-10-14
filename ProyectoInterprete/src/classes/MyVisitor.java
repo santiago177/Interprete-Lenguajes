@@ -67,6 +67,11 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 	}
 	
 	@Override
+	public T visitEndsubproc(PSeintParser.EndsubprocContext ctx) {
+		return visitChildren(ctx);
+	}
+	
+	@Override
 	public T visitSubpr(PSeintParser.SubprContext ctx) {
 		String name;
 		if (ctx.ID().size() == 1) {
@@ -108,8 +113,9 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 		//System.out.println("in proc");
 		tables.put(main, new HashMap<>());
 		Symbol func = new Symbol(main, "function");
-		func.value = ctx.block();
+		func.value = ctx.block();		
 		functions.put(main, func);
+		visitBlock(ctx.block());
 		return null;
 	}
 	
@@ -516,6 +522,7 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 		}
 		return (T)list;
 	}
+		
 	
 	@Override
 	public T visitDef(PSeintParser.DefContext ctx) {
@@ -536,11 +543,31 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 		}
 		return null;
 	}
+		
+	@Override
+	public T visitAsig(PSeintParser.AsigContext ctx) {
+		String id = ctx.ID().getText();
+		HashMap<String, Symbol> table = tables.get(currentContext.peek());
+		if(table.containsKey(id)) {
+			Symbol sy = table.get(id);
+			Pair<Object, String> res = (Pair)visitExpr(ctx.expr());
+			if(res.second.equals(sy.type)) {
+				sy.value = res.first;
+			}
+			else {
+				//semanticError(line, col);
+			}
+		}
+		else {
+			//semanticError();
+		}
+		return null;
+	}
 	
 	@Override
 	public T visitComid(PSeintParser.ComidContext ctx) {
 		if(ctx.def() != null) {
-			
+			visitDef(ctx.def());
 		}
 		else if(ctx.asig() != null) {
 			
@@ -549,7 +576,7 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 			
 		} 
 		else if (ctx.write() != null) {
-
+			visitWrite(ctx.write());
 		} 
 		else if (ctx.read() != null) {
 
@@ -606,6 +633,15 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 	}
 	
 	@Override
+	public T visitFuncexprl(PSeintParser.FuncexprlContext ctx) {
+		ArrayList<Symbol> ans = new ArrayList<>();
+		if(ctx != null) {
+			
+		}
+		return (T)ans;
+	}
+	
+	@Override
 	public T visitCall(PSeintParser.CallContext ctx) {
 		Pair<Object, String> ans = new Pair<>();
 		String name = ctx.ID().getText();
@@ -618,6 +654,8 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 			for(Symbol s: func.args) {
 				table.put(s.id, s);
 			}
+			tables.remove(currentContext.peek());
+			currentContext.pop();
 		}
 		else {
 			//semanticError();
