@@ -245,12 +245,6 @@ public interface PSeintVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitIdorv(PSeintParser.IdorvContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link PSeintParser#t8}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitT8(PSeintParser.T8Context ctx);
-	/**
 	 * Visit a parse tree produced by {@link PSeintParser#l1}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

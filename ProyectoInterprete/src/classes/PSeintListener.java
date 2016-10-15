@@ -398,16 +398,6 @@ public interface PSeintListener extends ParseTreeListener {
 	 */
 	void exitIdorv(PSeintParser.IdorvContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link PSeintParser#t8}.
-	 * @param ctx the parse tree
-	 */
-	void enterT8(PSeintParser.T8Context ctx);
-	/**
-	 * Exit a parse tree produced by {@link PSeintParser#t8}.
-	 * @param ctx the parse tree
-	 */
-	void exitT8(PSeintParser.T8Context ctx);
-	/**
 	 * Enter a parse tree produced by {@link PSeintParser#l1}.
 	 * @param ctx the parse tree
 	 */

@@ -1,8 +1,6 @@
-Funcion x <-sum(a, b)
-    definir x como entero;
-    x <- a+b;
-finfuncion
-
 Proceso mi_proceso
-    escribir sum(4,5);
+    definir a como entero;
+    dimension a[5,6];
+    a[2,5] <- 5;
+    escribir a[2,5];
 finproceso

@@ -3,7 +3,9 @@ package misc;
 public class Symbol {
 	public String id;
 	public String type;
+	public String arrayType;
 	public Object value;
+	public Array arrayValue = null;
 	public boolean array;
 	@Override
 	public int hashCode() {
@@ -14,37 +16,19 @@ public class Symbol {
 		result = prime * result + ((value == null) ? 0 : value.hashCode());
 		return result;
 	}
+	
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Symbol other = (Symbol) obj;
-		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id))
-			return false;
-		if (type == null) {
-			if (other.type != null)
-				return false;
-		} else if (!type.equals(other.type))
-			return false;
-		if (value == null) {
-			if (other.value != null)
-				return false;
-		} else if (!value.equals(other.value))
-			return false;
-		return true;
+		Symbol t = (Symbol)obj;
+		return t.id.equals(this.id);
 	}
+	
 	public Symbol(String id, String type) {
+		this.array = false;
 		this.id = id;
 		this.type = type;	
 	}
 	public Symbol() {
-		array = false;
+		this.array = false;
 	}
 }

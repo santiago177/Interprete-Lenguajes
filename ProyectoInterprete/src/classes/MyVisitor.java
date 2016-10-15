@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Stack;
 
+import classes.PSeintParser.ExprContext;
+import misc.Array;
 import misc.Function;
 import misc.Symbol;
 
@@ -41,6 +43,48 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 	static void semanticError(int line, int col, String info) {
 		System.err.println(String.format("<%d:%d> Error semantico:%s\n", line, col, info));
 		System.exit(-1);
+	}
+	
+	static void runtimeError(int line, int col, String info) {
+		System.err.println(String.format("<%d:%d> Error en tiempo de ejecucion:%s\n", line, col, info));
+		System.exit(-1);
+	}
+	
+	static Pair<Object, String> getArrayValue(Array array, ArrayList<Integer> indexes, ArrayList<Integer> dimensions, String type, ExprContext ctx) {
+		Pair<Object, String> ans = new Pair<>();
+		int idx = 0;
+		int dim = 1;
+		for(int i = indexes.size()-1; i >= 0; i--) {
+			int index = indexes.get(i);				
+			int dimension = array.dimensions.get(i);
+			if(index < 0 || index >= dimension) {
+				int line = ctx.expr().start.getLine();
+				int col = ctx.expr().start.getCharPositionInLine()+1;
+				runtimeError(line, col, String.format(" tipos de datos incompatibles. Se accedio a una posicion no valida del arreglo: %s", index));
+			}
+			idx += index*dim;
+			dim *= dimension;
+		}
+		ans.first = array.array[idx];
+		ans.second = type;
+		return ans;
+	}
+	
+	static void putArrayValue(Array array, ArrayList<Integer> indexes, ArrayList<Integer> dimensions, String type, ExprContext ctx, Object value) {
+		int idx = 0;
+		int dim = 1;
+		for(int i = indexes.size()-1; i >= 0; i--) {
+			int index = indexes.get(i);				
+			int dimension = array.dimensions.get(i);
+			if(index < 0 || index >= dimension) {
+				int line = ctx.expr().start.getLine();
+				int col = ctx.expr().start.getCharPositionInLine()+1;
+				runtimeError(line, col, String.format(" tipos de datos incompatibles. Se accedio a una posicion no valida del arreglo: %s", index));
+			}
+			idx += index*dim;
+			dim *= dimension;
+		}
+		array.array[idx] = value;
 	}
 	
 	static boolean isQuote(char c) {
@@ -646,45 +690,110 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 	}
 	
 	@Override
+	public T visitCor(PSeintParser.CorContext ctx) {
+		ArrayList<Integer> indexes;
+		Pair<Object, String> p = (Pair)visitExpr(ctx.expr());
+		indexes = (ArrayList<Integer>)visitExprl(ctx.exprl());
+		if(!p.second.equals("int")) {
+			int line = ctx.expr().start.getLine();
+			int col = ctx.expr().start.getCharPositionInLine()+1;
+			semanticError(line, col, String.format(" tipos de datos incompatibles. Se esperaba: %s; se encontro:%s.", "entero", p.second));
+		}
+		indexes.add((int)p.first);
+		return (T)indexes;
+	}
+	
+	@Override
 	public T visitAsig(PSeintParser.AsigContext ctx) {
 		//System.out.println("in asig");
 		String id = ctx.ID().getText();
-		HashMap<String, Symbol> table = tables.peek();		
-		if(table.containsKey(id)) {
-			Symbol sy = table.get(id);
-			//System.out.printf("symbol from table id %s type %s\n", sy.id, sy.type);
-			Pair<Object, String> res = (Pair)visitExpr(ctx.expr());
-			if(res.second.equals(sy.type) || (isNumeric(res.second) && isNumeric(sy.type))) {
-				if(sy.type.equals("int") && res.second.equals("real")) {
+		HashMap<String, Symbol> table = tables.peek();	
+		if(ctx.cor() == null) {
+			if(table.containsKey(id)) {
+				Symbol sy = table.get(id);
+				//System.out.printf("symbol from table id %s type %s\n", sy.id, sy.type);
+				Pair<Object, String> res = (Pair)visitExpr(ctx.expr());
+				if(res.second.equals(sy.type) || (isNumeric(res.second) && isNumeric(sy.type))) {
+					if(sy.type.equals("int") && res.second.equals("real")) {
+						int line = ctx.expr().start.getLine();
+						int col = ctx.expr().start.getCharPositionInLine()+1;
+						semanticError(line, col, String.format(" tipos de datos incompatibles. Se esperaba: %s; se encontro:%s.", "entero", "real"));
+					}
+					else
+						sy.value = res.first;
+				}
+				else {
 					int line = ctx.expr().start.getLine();
 					int col = ctx.expr().start.getCharPositionInLine()+1;
-					semanticError(line, col, String.format(" tipos de datos incompatibles. Se esperaba: %s; se encontro:%s.", "int", "real"));
+					semanticError(line, col, String.format(" tipos de datos incompatibles. Se esperaba: %s; se encontro:%s.", typeName.get(sy.type), typeName.get(res.second)));
 				}
-				else
-					sy.value = res.first;
 			}
 			else {
 				int line = ctx.expr().start.getLine();
 				int col = ctx.expr().start.getCharPositionInLine()+1;
-				semanticError(line, col, String.format(" tipos de datos incompatibles. Se esperaba: %s; se encontro:%s.", typeName.get(sy.type), typeName.get(res.second)));
+				semanticError(line, col, String.format(" la variable con nombre \"%s\" no ha sido declarada.", id));
 			}
 		}
 		else {
-			int line = ctx.expr().start.getLine();
-			int col = ctx.expr().start.getCharPositionInLine()+1;
-			semanticError(line, col, String.format(" la variable con nombre \"%s\" no ha sido declarada.", id));
+			if(table.containsKey(id)) {				
+				ArrayList<Integer> indexes = (ArrayList<Integer>)visitCor(ctx.cor());
+				Pair<Object, String> res = (Pair)visitExpr(ctx.expr());
+				Symbol sy = table.get(id);
+				Array array = sy.arrayValue;
+				putArrayValue(array, indexes, array.dimensions, sy.arrayType, ctx.cor().expr(), res.first);
+				if(!sy.arrayType.equals(res.second)) {
+					int line = ctx.expr().start.getLine();
+					int col = ctx.expr().start.getCharPositionInLine()+1;
+					semanticError(line, col, String.format(" tipos de datos incompatibles. Se esperaba: %s; se encontro:%s.", typeName.get(sy.type), typeName.get(res.second)));
+				}
+			}
+			else {
+				int line = ctx.expr().start.getLine();
+				int col = ctx.expr().start.getCharPositionInLine()+1;
+				semanticError(line, col, String.format(" la variable con nombre \"%s\" no ha sido declarada.", id));
+			}						
 		}
 		return null;
 	}
 	
+
 	@Override
 	public T visitRead(PSeintParser.ReadContext ctx) {
-		return visitChildren(ctx);
+		
+		return null;
 	}
 	
 	@Override
 	public T visitArray(PSeintParser.ArrayContext ctx) {
-		return visitChildren(ctx);
+		String name = ctx.ID().getText();
+		HashMap<String, Symbol> table = tables.peek();
+		if(table.containsKey(name)) {
+			Symbol sy = table.get(name);			
+			Pair<Object, String> p = (Pair)visitExpr(ctx.expr());
+			if(!p.second.equals("int")) {
+				int line = ctx.expr().start.getLine();
+				int col = ctx.expr().start.getCharPositionInLine()+1;
+				semanticError(line, col, String.format(" tipos de datos incompatibles. Se esperaba %s; se encontro: %s", "entero", typeName.get(p.second)));
+			}
+			sy.array = true;
+			sy.arrayType = sy.type;
+			sy.type = "array";
+			ArrayList<Integer> arrayList = (ArrayList<Integer>)visitExprl(ctx.exprl());
+			arrayList.add((int)p.first);
+			int size = 1;
+			for(int elem: arrayList) 
+				size *= elem;
+			Array array = new Array();
+			array.dimensions = arrayList;
+			array.array = new Object[size];
+			sy.arrayValue = array;
+		}
+		else {
+			int line = ctx.ID().getSymbol().getLine();
+			int col = ctx.ID().getSymbol().getCharPositionInLine()+1;
+			semanticError(line, col, String.format(" la variable con nombre \"%s\" no ha sido declarada.", name));
+		}
+		return null;
 	}
 	
 	@Override
@@ -870,6 +979,11 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 				int col = ctx.ID().getSymbol().getCharPositionInLine()+1;
 				semanticError(line, col, String.format(" la variable con nombre \"%s\" no ha sido declarada.", name));
 			}
+			if(ans.first == null) {
+				int line = ctx.ID().getSymbol().getLine();
+				int col = ctx.ID().getSymbol().getCharPositionInLine()+1;
+				semanticError(line, col, String.format(" la variable con nombre \"%s\" no ha sido inicializada.", ctx.getText()));
+			}
 		}
 		else if(ctx.call() != null) {			
 			Pair<Object, String> val = (Pair)visitCall(ctx.call());			
@@ -898,7 +1012,12 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 			}
 		}
 		else if(ctx.idarray() != null) {
-			
+			ans = (Pair)visitIdarray(ctx.idarray());
+			if(ans.first == null) {
+				int line = ctx.start.getLine();
+				int col = ctx.start.getCharPositionInLine()+1;
+				semanticError(line, col, String.format(" la variable con nombre \"%s\" no ha sido inicializada.", ctx.getText()));
+			}
 		}
 		else if(ctx.VERDADERO() != null) {
 			ans.first = true;
@@ -922,6 +1041,51 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 			}
 			
 			ans.second = (String)temp.second;
+		}		
+		return (T)ans;
+	}
+	
+	@Override
+	public T visitExprl(PSeintParser.ExprlContext ctx) {
+		ArrayList<Integer> ans = new ArrayList<>();
+		if(ctx.expr() != null) {
+			Pair<Object, String> p = (Pair)visitExpr(ctx.expr());
+			if(!p.second.equals("int")) {
+				int line = ctx.expr().start.getLine();
+				int col = ctx.expr().start.getCharPositionInLine()+1;
+				semanticError(line, col, String.format(" tipos de datos incompatibles. Se esperaba %s; se encontro: %s", "entero", typeName.get(p.second)));
+			}
+			ans = (ArrayList<Integer>)visitExprl(ctx.exprl());
+			ans.add((int)p.first);
+		}
+		return (T)ans;
+	}
+	
+	@Override
+	public T visitIdarray(PSeintParser.IdarrayContext ctx) {
+		Pair<Object, String> ans = new Pair();
+		String name = ctx.ID().getText();
+		HashMap<String, Symbol> table = tables.peek();
+		if(table.containsKey(name)){
+			Array array = table.get(name).arrayValue;
+			Pair <Object, String> p = (Pair)visitExpr(ctx.expr());
+			if(!p.second.equals("int")) {
+				int line = ctx.expr().start.getLine();
+				int col = ctx.expr().start.getCharPositionInLine()+1;
+				semanticError(line, col, String.format(" tipos de datos incompatibles. Se esperaba %s; se encontro: %s", "entero", typeName.get(p.second)));
+			}
+			ArrayList<Integer> indexes = (ArrayList<Integer>)visitExprl(ctx.exprl());		
+			indexes.add((int)p.first);
+			int idx = 0;
+			int dim = 1;
+			//System.out.printf("%s %s %s\n", array, indexes, array.dimensions);
+			Pair<Object, String> val = getArrayValue(array, indexes, array.dimensions, table.get(name).arrayType, ctx.expr());
+			ans = val;
+		}
+		else {
+			int line = ctx.ID().getSymbol().getLine();
+			int col = ctx.ID().getSymbol().getCharPositionInLine()+1;
+			semanticError(line, col, String.format(" la variable con nombre \"%s\" no ha sido declarada.", name));
 		}
 		return (T)ans;
 	}
