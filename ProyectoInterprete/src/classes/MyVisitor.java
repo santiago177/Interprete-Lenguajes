@@ -24,8 +24,9 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 	static final double precision = 1e-9;
 	static HashMap<String, String> typeName = new HashMap<>();
 	static HashMap<String, Symbol> functions = new HashMap<>();
-	static HashMap<String, HashMap<String, Symbol>> tables = new HashMap<>();
-	static Stack<String> currentContext = new Stack<>();
+	//static HashMap<String, HashMap<String, Symbol>> tables = new HashMap<>();
+	static Stack<HashMap<String, Symbol>> tables = new Stack<>();
+	//static Stack<String> currentContext = new Stack<>();
 	static boolean isVoid = true;
 	static String currentType;
 	
@@ -93,8 +94,8 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 				func.block = ctx.block();
 				func.args = (ArrayList<Symbol>)visitArgs(ctx.args());
 				functions.put(name, func);
-				tables.put(name, null);
-				HashMap<String, Symbol> table = tables.get(name);
+				//tables.put(name, null);
+				//HashMap<String, Symbol> table = tables.get(name);
 			}
 		} else {
 			name = ctx.ID(1).getText();
@@ -108,8 +109,8 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 				func.block = ctx.block();
 				func.args = (ArrayList<Symbol>)visitArgs(ctx.args());
 				functions.put(name, func);
-				tables.put(name, new HashMap<>());
-				HashMap<String, Symbol> table = tables.get(name);
+				//tables.put(name, new HashMap<>());
+				//HashMap<String, Symbol> table = tables.get(name);
 			}
 		}
 		return null;
@@ -134,11 +135,11 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 			int col = ctx.ID().getSymbol().getCharPositionInLine()+1;
 			semanticError(line, col, String.format(" el simbolo con nombre \"%s\" ya ha sido declarado.", name));
 		}
-		tables.put(name, new HashMap<>());
+		tables.push(new HashMap<>());
 		Symbol func = new Symbol(name, "function");
 		func.value = ctx.block();		
 		functions.put(name, func);
-		currentContext.push(name);		
+		//currentContext.push(name);		
 		visitBlock(ctx.block());
 		return null;
 	}
@@ -622,8 +623,8 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 		currentType = type;
 		//System.out.printf("in def type = %s\n", currentType);
 		//System.out.println(currentContext.isEmpty();
-		String funcname = currentContext.peek();
-		HashMap<String, Symbol> table = tables.get(funcname);
+		//String funcname = currentContext.peek();
+		HashMap<String, Symbol> table = tables.peek();
 		ArrayList<Symbol> variables = (ArrayList<Symbol>)visitIdl(ctx.idl());
 		variables.add(new Symbol(id, type));
 		for(Symbol s: variables) {
@@ -648,14 +649,17 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 	public T visitAsig(PSeintParser.AsigContext ctx) {
 		//System.out.println("in asig");
 		String id = ctx.ID().getText();
-		HashMap<String, Symbol> table = tables.get(currentContext.peek());		
+		HashMap<String, Symbol> table = tables.peek();		
 		if(table.containsKey(id)) {
 			Symbol sy = table.get(id);
 			//System.out.printf("symbol from table id %s type %s\n", sy.id, sy.type);
 			Pair<Object, String> res = (Pair)visitExpr(ctx.expr());
 			if(res.second.equals(sy.type) || (isNumeric(res.second) && isNumeric(sy.type))) {
-				if(sy.type.equals("int") && res.second.equals("real"))
-					sy.value = (int)res.first;
+				if(sy.type.equals("int") && res.second.equals("real")) {
+					int line = ctx.expr().start.getLine();
+					int col = ctx.expr().start.getCharPositionInLine()+1;
+					semanticError(line, col, String.format(" tipos de datos incompatibles. Se esperaba: %s; se encontro:%s.", "int", "real"));
+				}
 				else
 					sy.value = res.first;
 			}
@@ -668,7 +672,7 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 		else {
 			int line = ctx.expr().start.getLine();
 			int col = ctx.expr().start.getCharPositionInLine()+1;
-			semanticError(line, col, String.format("la variable con nombre \"%s\" no ha sido declarada.", id));
+			semanticError(line, col, String.format(" la variable con nombre \"%s\" no ha sido declarada.", id));
 		}
 		return null;
 	}
@@ -791,9 +795,9 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 		Pair<Object, String> ans = new Pair<>();
 		String name = ctx.ID().getText();
 		if(functions.containsKey(name)) {
-			tables.put(name, new HashMap<>());
+			tables.push(new HashMap<>());
 			Function func = (Function)functions.get(name);			
-			HashMap<String, Symbol> table = tables.get(name);
+			HashMap<String, Symbol> table = tables.peek();
 			ArrayList<Pair> args = (ArrayList<Pair>)visitFuncexprl(ctx.funcexprl());								
 			if(ctx.expr() != null) {
 				Pair value = (Pair)visitExpr(ctx.expr());
@@ -813,7 +817,7 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 				semanticError(line, col, String.format("el numero de argumentos que recibe la funcion no corresponde con en numero de argumentos pasados."));
 			}
 			//returnStack.push(func.returnId);
-			currentContext.push(name);
+			//currentContext.push(name);
 			visitBlock(func.block);
 			//System.out.println("return value "+ func.returnId);
 			if(func.returnId != null) {
@@ -825,8 +829,7 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 				ans.first = null;
 				ans.second = null;
 			}
-			tables.remove(currentContext.peek());
-			currentContext.pop();
+			tables.pop();			
 		}
 		else {
 			int line = ctx.ID().getSymbol().getLine();
@@ -855,7 +858,7 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 			ans.second = "string";
 		}
 		else if(ctx.ID() != null) {
-			HashMap<String, Symbol> table = tables.get(currentContext.peek());
+			HashMap<String, Symbol> table = tables.peek();
 			String name = ctx.ID().getText();
 			if(table.containsKey(name)) {
 				Symbol sy = table.get(name);
@@ -865,7 +868,7 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 			else {
 				int line = ctx.ID().getSymbol().getLine();
 				int col = ctx.ID().getSymbol().getCharPositionInLine()+1;
-				semanticError(line, col, String.format("la variable con nombre \"%s\" no ha sido declarada.", name));
+				semanticError(line, col, String.format(" la variable con nombre \"%s\" no ha sido declarada.", name));
 			}
 		}
 		else if(ctx.call() != null) {			
@@ -940,7 +943,10 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 	@Override
 	public T visitWrite(PSeintParser.WriteContext ctx) {
 		//System.out.println("at write");
-		String start = ((Pair)visitExpr(ctx.expr())).first.toString();
+		Pair  p = (Pair)visitExpr(ctx.expr());
+		String start = p.first.toString();
+		if(p.second.equals("boolean"))
+			start = (boolean)p.first?"verdadero":"falso";
 		String end = (String) visitL3(ctx.l3());
 		System.out.printf("%s %s\n", start, end);
 		return null;
@@ -952,7 +958,10 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 		if(ctx.expr() != null) {
 			Pair<Object, String> expr = (Pair)visitExpr(ctx.expr());
 			String end = (String)visitL3(ctx.l3());
-			ans = expr.first.toString()+" "+end;
+			String app = expr.first.toString();
+			if(expr.second.equals("boolean"))
+				app = (boolean)expr.first?"verdadero":"falso";
+			ans = app+" "+end;
 		}
 		
 		return (T)ans;

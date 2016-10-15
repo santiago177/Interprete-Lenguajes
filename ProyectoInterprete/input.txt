@@ -1,11 +1,8 @@
-SubProceso r <- trash ( x )
-	definir r como entero;
-    r <- x-1000;
-FinSubProceso
+Funcion x <-sum(a, b)
+    definir x como entero;
+    x <- a+b;
+finfuncion
 
-
-Proceso sin_titulo
-definir t como real;
-    t <- trash(2);
-    escribir t;
-FinProceso
+Proceso mi_proceso
+    escribir sum(4,5);
+finproceso
