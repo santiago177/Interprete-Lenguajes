@@ -23,14 +23,24 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 	
 	static final String main = "_main";
 	static final double precision = 1e-9;
+	static HashMap<String, String> typeName = new HashMap<>();
 	static HashMap<String, Symbol> functions = new HashMap<>();
 	static HashMap<String, HashMap<String, Symbol>> tables = new HashMap<>();
 	static Stack<String> currentContext = new Stack<>();
 	static boolean isVoid = true;
-	static Pair<Object, String> returnValue = null;
+	static String returnValue = null;
 	static String currentType;
 	
-	static void semanticError(int line, int col) {
+	static {
+		typeName.put("string", "cadena");
+		typeName.put("int", "entero");
+		typeName.put("real", "real");
+		typeName.put("boolean", "logico");
+		typeName.put("char", "caracter");
+	}
+	
+	static void semanticError(int line, int col, String info) {
+		System.err.println(String.format("<%d:%d> Error semantico:%s\n", line, col, info));
 		System.exit(-1);
 	}
 	
@@ -79,7 +89,7 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 			if (functions.containsKey(name)) {
 				int line = ctx.ID(0).getSymbol().getLine();
 				int col = ctx.ID(0).getSymbol().getCharPositionInLine() + 1;
-				semanticError(line, col);
+				semanticError(line, col, String.format("la funcion con nombre %s ya ha sido declarada", name));
 			} else {
 				Function func = new Function(name, "function");
 				func.block = ctx.block();
@@ -93,7 +103,7 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 			if (functions.containsKey(name)) {
 				int line = ctx.ID(1).getSymbol().getLine();
 				int col = ctx.ID(1).getSymbol().getCharPositionInLine() + 1;
-				semanticError(line, col);
+				semanticError(line, col, String.format("la funcion con nombre %s ya ha sido declarada", name));
 			} else {
 				Function func = new Function(name, "function");
 				func.returnId = ctx.ID(0).getText();
@@ -107,7 +117,16 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 		}
 		return null;
 	}
-
+	
+	@Override
+	public T visitSubprl(PSeintParser.SubprlContext ctx) {
+		if(ctx.subpr() != null) {
+			visitSubpr(ctx.subpr());
+			visitSubprl(ctx.subprl());
+		}
+		return null;
+	}
+	
 	@Override
 	public T visitS(PSeintParser.SContext ctx) {
 		//System.out.println("in proc");
@@ -115,6 +134,8 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 		Symbol func = new Symbol(main, "function");
 		func.value = ctx.block();		
 		functions.put(main, func);
+		currentContext.push(main);
+		visitSubprl(ctx.subprl());
 		visitBlock(ctx.block());
 		return null;
 	}
@@ -125,8 +146,15 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 		if(ctx.TOKEN_O() != null) {
 			Pair<Object, String> left = (Pair)visitExpr(ctx.expr());
 			Pair<Object, String> right = (Pair)visitEA(ctx.eA());
-			if(!left.second.equals("boolean") || !right.second.equals("boolean")) {
-				//semanticError();
+			if(!left.second.equals("boolean")) {
+				int line = ctx.expr().start.getLine();
+				int col = ctx.expr().start.getCharPositionInLine()+1;
+				semanticError(line, col, String.format("tipos de datos incompatibles. Se esperaba %s; se encontro: %s", "logico", typeName.get(left.second)));
+			}
+			if( !right.second.equals("boolean")) {
+				int line = ctx.eA().start.getLine();
+				int col = ctx.eA().start.getCharPositionInLine()+1;
+				semanticError(line, col, String.format("tipos de datos incompatibles. Se esperaba %s; se encontro: %s", "logico", typeName.get(right.second)));
 			}
 			else {
 				boolean l = (boolean)left.first;
@@ -147,8 +175,15 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 		if(ctx.TOKEN_Y() != null) {
 			Pair<Object, String> left = (Pair)visitEA(ctx.eA());
 			Pair<Object, String> right = (Pair)visitEB(ctx.eB());
-			if(!left.second.equals("boolean") || !right.second.equals("boolean")) {
-				//semanticError();
+			if(!left.second.equals("boolean")) {
+				int line = ctx.eA().start.getLine();
+				int col = ctx.eA().start.getCharPositionInLine()+1;
+				semanticError(line, col, String.format("tipos de datos incompatibles. Se esperaba %s; se encontro: %s", "logico", typeName.get(left.second)));
+			}
+			if(!right.second.equals("boolean")) {
+				int line = ctx.eB().start.getLine();
+				int col = ctx.eB().start.getCharPositionInLine()+1;
+				semanticError(line, col, String.format("tipos de datos incompatibles. Se esperaba %s; se encontro: %s", "logico", typeName.get(right.second)));
 			}
 			else {
 				boolean l = (boolean)left.first;
@@ -168,67 +203,107 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 		Pair<Object, String> ans = new Pair<>();
 		if(ctx.TOKEN_IGUAL() != null) {
 			Pair<Object, String> left = (Pair)visitEB(ctx.eB());
-			Pair<Object, String> right = (Pair)visitEC(ctx.eC());
-			if(left.second.equals("boolean") || right.second.equals("boolean")) {
-				//semanticError();
-			}
-			else {				
-				if(left.second.equals("string")) {
-					if(!right.second.equals("string")){
-						//semanticError();
-					}
-					else {
-						ans.first = ((String)left.first).equals((String)right.first);
-						ans.second = "boolean";
-					}
+			Pair<Object, String> right = (Pair)visitEC(ctx.eC());			
+			if(left.second.equals("string") || right.second.equals("string")) {
+				if(!left.second.equals("string")){
+					int line = ctx.eB().start.getLine();
+					int col = ctx.eB().start.getCharPositionInLine()+1;
+					semanticError(line, col, String.format("tipos de datos incompatibles. Se esperaba %s; se encontro: %s", "cadena", typeName.get(left.second)));
+				}
+				else if(!right.second.equals("string")) {
+					int line = ctx.eC().start.getLine();
+					int col = ctx.eC().start.getCharPositionInLine()+1;
+					semanticError(line, col, String.format("tipos de datos incompatibles. Se esperaba %s; se encontro: %s", "cadena", typeName.get(right.second)));
 				}
 				else {
-					if(left.second.equals("real") || right.second.equals("real")) {
-						double l = left.first instanceof Integer?((Integer)left.first).doubleValue() : (double)left.first;
-						double r = right.first instanceof Integer?((Integer)right.first).doubleValue() : (double)right.first;;
-						ans.first = Math.abs(l-r) < precision;
-						ans.second = "boolean";
-					}
-					else {
-						int l = (int)left.first;
-						int r = (int)right.first;
-						ans.first = l==r;
-						ans.second = "boolean";
-					}
+					ans.first = ((String)left.first).equals((String)right.first);
+					ans.second = "boolean";
+				}
+			}
+			else if(left.second.equals("boolean") || right.second.equals("boolean")) {
+				if(!left.second.equals("boolean")){
+					int line = ctx.eB().start.getLine();
+					int col = ctx.eB().start.getCharPositionInLine()+1;
+					semanticError(line, col, String.format("tipos de datos incompatibles. Se esperaba %s; se encontro: %s", "logico", typeName.get(left.second)));
+				}
+				else if(!right.second.equals("boolean")) {
+					int line = ctx.eC().start.getLine();
+					int col = ctx.eC().start.getCharPositionInLine()+1;
+					semanticError(line, col, String.format("tipos de datos incompatibles. Se esperaba %s; se encontro: %s", "logico", typeName.get(right.second)));
+				}
+				else {
+					boolean l = (boolean)left.first;
+					boolean r = (boolean)right.first;
+					ans.first = l==r;
+					ans.second = "boolean";
+				}
+			}
+			else {
+				if(left.second.equals("real") || right.second.equals("real")) {
+					double l = left.first instanceof Integer?((Integer)left.first).doubleValue() : (double)left.first;
+					double r = right.first instanceof Integer?((Integer)right.first).doubleValue() : (double)right.first;;
+					ans.first = Math.abs(l-r) < precision;
+					ans.second = "boolean";
+				}
+				else {
+					int l = (int)left.first;
+					int r = (int)right.first;
+					ans.first = l==r;
+					ans.second = "boolean";
 				}
 			}
 		}
 		else if(ctx.TOKEN_DIF() != null) {
 			Pair<Object, String> left = (Pair)visitEB(ctx.eB());
 			Pair<Object, String> right = (Pair)visitEC(ctx.eC());
-			if(left.second.equals("boolean") || right.second.equals("boolean")) {
-				//semanticError();
-			}
-			else {
-				if(left.second.equals("string")) {
-					if(!right.second.equals("string")){
-						//semanticError();
-					}
-					else {
-						ans.first = !((String)left.first).equals((String)right.first);
-						ans.second = "boolean";
-					}
+			if(left.second.equals("string") || right.second.equals("string")) {
+				if(!left.second.equals("string")){
+					int line = ctx.eB().start.getLine();
+					int col = ctx.eB().start.getCharPositionInLine()+1;
+					semanticError(line, col, String.format("tipos de datos incompatibles. Se esperaba %s; se encontro: %s", "cadena", typeName.get(left.second)));
+				}
+				else if(!right.second.equals("string")) {
+					int line = ctx.eC().start.getLine();
+					int col = ctx.eC().start.getCharPositionInLine()+1;
+					semanticError(line, col, String.format("tipos de datos incompatibles. Se esperaba %s; se encontro: %s", "cadena", typeName.get(right.second)));
 				}
 				else {
-					if(left.second.equals("real") || right.second.equals("real")) {
-						double l = left.first instanceof Integer?((Integer)left.first).doubleValue() : (double)left.first;
-						double r = right.first instanceof Integer?((Integer)right.first).doubleValue() : (double)right.first;;
-						ans.first = Math.abs(l-r) > precision;
-						ans.second = "boolean";
-					}
-					else {
-						int l = (int)left.first;
-						int r = (int)right.first;
-						ans.first = l!=r;
-						ans.second = "boolean";
-					}
+					ans.first = !((String)left.first).equals((String)right.first);
+					ans.second = "boolean";
 				}
 			}
+			else if(left.second.equals("boolean") || right.second.equals("boolean")) {
+				if(!left.second.equals("boolean")){
+					int line = ctx.eB().start.getLine();
+					int col = ctx.eB().start.getCharPositionInLine()+1;
+					semanticError(line, col, String.format("tipos de datos incompatibles. Se esperaba %s; se encontro: %s", "logico", typeName.get(left.second)));
+				}
+				else if(!right.second.equals("boolean")) {
+					int line = ctx.eC().start.getLine();
+					int col = ctx.eC().start.getCharPositionInLine()+1;
+					semanticError(line, col, String.format("tipos de datos incompatibles. Se esperaba %s; se encontro: %s", "logico", typeName.get(right.second)));
+				}
+				else {
+					boolean l = (boolean)left.first;
+					boolean r = (boolean)right.first;
+					ans.first = l!=r;
+					ans.second = "boolean";
+				}
+			}
+			else {
+				if(left.second.equals("real") || right.second.equals("real")) {
+					double l = left.first instanceof Integer?((Integer)left.first).doubleValue() : (double)left.first;
+					double r = right.first instanceof Integer?((Integer)right.first).doubleValue() : (double)right.first;;
+					ans.first = Math.abs(l-r) > precision;
+					ans.second = "boolean";
+				}
+				else {
+					int l = (int)left.first;
+					int r = (int)right.first;
+					ans.first = l!=r;
+					ans.second = "boolean";
+				}
+			}			
 		}
 		else {
 			ans = (Pair)visitEC(ctx.eC());
@@ -516,7 +591,7 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 	@Override
 	public T visitIdl(PSeintParser.IdlContext ctx) {
 		ArrayList<Symbol> list = new ArrayList<>();
-		if(ctx != null) {
+		if(ctx != null && ctx.ID() != null) {
 			list = (ArrayList<Symbol>)visitIdl(ctx.idl());
 			list.add(new Symbol(ctx.ID().getText(), currentType));
 		}
@@ -529,9 +604,12 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 		String id = ctx.ID().getText();
 		String type = ctx.tipo().getText();
 		currentType = type;
+		System.out.println("in def");
+		//System.out.println(currentContext.isEmpty());
 		String funcname = currentContext.peek();
 		HashMap<String, Symbol> table = tables.get(funcname);
 		ArrayList<Symbol> variables = (ArrayList<Symbol>)visitIdl(ctx.idl());
+		variables.add(new Symbol(ctx.ID().getText(), currentType));
 		variables.add(new Symbol(id, type));
 		for(Symbol s: variables) {
 			if(table.containsKey(s.id)) {
@@ -546,6 +624,7 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 		
 	@Override
 	public T visitAsig(PSeintParser.AsigContext ctx) {
+		System.out.println("in asig");
 		String id = ctx.ID().getText();
 		HashMap<String, Symbol> table = tables.get(currentContext.peek());
 		if(table.containsKey(id)) {
@@ -565,30 +644,50 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 	}
 	
 	@Override
+	public T visitRead(PSeintParser.ReadContext ctx) {
+		return visitChildren(ctx);
+	}
+	
+	@Override
+	public T visitArray(PSeintParser.ArrayContext ctx) {
+		return visitChildren(ctx);
+	}
+	
+	@Override
+	public T visitCls(PSeintParser.ClsContext ctx) {
+		return visitChildren(ctx);
+	}
+	
+	@Override
+	public T visitSpwait(PSeintParser.SpwaitContext ctx) {
+		return visitChildren(ctx);
+	}
+	
+	@Override
 	public T visitComid(PSeintParser.ComidContext ctx) {
 		if(ctx.def() != null) {
 			visitDef(ctx.def());
 		}
 		else if(ctx.asig() != null) {
-			
+			visitAsig(ctx.asig());
 		}
 		else if(ctx.call() != null) {
-			
+			visitCall(ctx.call());
 		} 
 		else if (ctx.write() != null) {
 			visitWrite(ctx.write());
 		} 
 		else if (ctx.read() != null) {
-
+			visitRead(ctx.read());
 		} 
 		else if (ctx.array() != null) {
-
+			visitArray(ctx.array());
 		} 
 		else if (ctx.cls() != null) {
-
+			visitCls(ctx.cls());
 		}
 		else if(ctx.spwait() != null) {
-			
+			visitSpwait(ctx.spwait());
 		}
 		else {
 			System.out.println("error fatal");
@@ -609,7 +708,10 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 	
 	@Override
 	public T visitL5(PSeintParser.L5Context ctx) {
-		return visitChildren(ctx);
+		if(ctx.storcom() != null) {
+			visitStorcom(ctx.storcom());
+		}
+		return null;
 	}
 	
 	@Override
@@ -625,11 +727,11 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 	
 	@Override
 	public T visitBlock(PSeintParser.BlockContext ctx) {
-		Pair<Object, String> ans = new Pair<>();
 		if(ctx.storcom() != null) {
 			visitStorcom(ctx.storcom());
+			visitL5(ctx.l5());
 		}
-		return (T)ans;
+		return null;
 	}
 	
 	@Override
@@ -643,17 +745,30 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 	
 	@Override
 	public T visitCall(PSeintParser.CallContext ctx) {
+		//System.out.println("in call");
 		Pair<Object, String> ans = new Pair<>();
 		String name = ctx.ID().getText();
+		System.out.println("functions");
 		if(functions.containsKey(name)) {
 			tables.put(name, new HashMap<>());
 			Function func = (Function)functions.get(name);
-			ans = (Pair)visitBlock(func.block);
+			returnValue = func.returnId;
 			currentContext.push(name);
 			HashMap<String, Symbol> table = tables.get(name);
 			for(Symbol s: func.args) {
 				table.put(s.id, s);
 			}
+			visitBlock(func.block);
+			if(returnValue != null) {
+				Symbol ret = table.get(returnValue);
+				ans.first = ret;
+				ans.second = ret.type;
+			}
+			else {
+				ans.first = null;
+				ans.second = null;
+			}
+			returnValue = null;
 			tables.remove(currentContext.peek());
 			currentContext.pop();
 		}
@@ -682,6 +797,16 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 			ans.second = "string";
 		}
 		else if(ctx.ID() != null) {
+			HashMap<String, Symbol> table = tables.get(currentContext.peek());
+			String name = ctx.ID().getText();
+			if(table.containsKey(name)) {
+				Symbol sy = table.get(name);
+				ans.first = sy.value;
+				ans.second = sy.type;
+			}
+			else {
+				//semanticError(line, col);
+			}
 		}
 		else if(ctx.call() != null) {
 			Pair<Object, String> val = (Pair)visitCall(ctx.call());
