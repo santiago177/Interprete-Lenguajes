@@ -702,7 +702,13 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 			visitAsig(ctx.asig());
 		}
 		else if(ctx.call() != null) {
-			visitCall(ctx.call());
+			Pair<Object, String> ret;
+			ret = (Pair)visitCall(ctx.call());
+			if(ret.first != null) {
+				int line = ctx.call().start.getLine();
+				int col = ctx.call().start.getCharPositionInLine()+1;
+				semanticError(line, col, String.format(" la funcion \"%s\" retorna un valor que debe ir en una expresion.", ctx.call().ID()));
+			}
 		} 
 		else if (ctx.write() != null) {
 			visitWrite(ctx.write());
@@ -802,8 +808,8 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 				}
 			}
 			else {
-				int line = ctx.expr().start.getLine();
-				int col = ctx.expr().start.getCharPositionInLine()+1;
+				int line = ctx.TOKEN_PAR_IZQ().getSymbol().getLine();
+				int col = ctx.TOKEN_PAR_IZQ().getSymbol().getCharPositionInLine()+1;
 				semanticError(line, col, String.format("el numero de argumentos que recibe la funcion no corresponde con en numero de argumentos pasados."));
 			}
 			//returnStack.push(func.returnId);

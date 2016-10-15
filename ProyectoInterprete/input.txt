@@ -1,13 +1,11 @@
-SubProceso z <- f ( x )
-    Definir z Como Real;
-    z <- 2*x + 4 + g(x);
+SubProceso r <- trash ( x )
+	definir r como entero;
+    r <- x-1000;
 FinSubProceso
 
-SubProceso z <- g ( x )
-    Definir z Como Real;
-    z <- 2*x*x;
-FinSubProceso
 
 Proceso sin_titulo
-    Escribir "fog(2) = " , f(g(2));
+definir t como real;
+    t <- trash(2);
+    escribir t;
 FinProceso
