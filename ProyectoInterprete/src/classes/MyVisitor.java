@@ -21,14 +21,12 @@ class Pair<J, K> {
 
 public class MyVisitor<T> extends PSeintBaseVisitor<T> {	
 	
-	static final String main = "_main";
 	static final double precision = 1e-9;
 	static HashMap<String, String> typeName = new HashMap<>();
 	static HashMap<String, Symbol> functions = new HashMap<>();
 	static HashMap<String, HashMap<String, Symbol>> tables = new HashMap<>();
 	static Stack<String> currentContext = new Stack<>();
 	static boolean isVoid = true;
-	static String returnValue = null;
 	static String currentType;
 	
 	static {
@@ -89,7 +87,7 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 			if (functions.containsKey(name)) {
 				int line = ctx.ID(0).getSymbol().getLine();
 				int col = ctx.ID(0).getSymbol().getCharPositionInLine() + 1;
-				semanticError(line, col, String.format("la funcion con nombre %s ya ha sido declarada", name));
+				semanticError(line, col, String.format(" el simbolo con nombre %s ya ha sido declarado.", name));
 			} else {
 				Function func = new Function(name, "function");
 				func.block = ctx.block();
@@ -103,15 +101,14 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 			if (functions.containsKey(name)) {
 				int line = ctx.ID(1).getSymbol().getLine();
 				int col = ctx.ID(1).getSymbol().getCharPositionInLine() + 1;
-				semanticError(line, col, String.format("la funcion con nombre %s ya ha sido declarada", name));
+				semanticError(line, col, String.format(" el simbolo con nombre %s ya ha sido declarado.", name));
 			} else {
 				Function func = new Function(name, "function");
 				func.returnId = ctx.ID(0).getText();
-				func.value = ctx.block();
+				func.block = ctx.block();
 				func.args = (ArrayList<Symbol>)visitArgs(ctx.args());
 				functions.put(name, func);
 				tables.put(name, new HashMap<>());
-				currentContext.push(main);
 				HashMap<String, Symbol> table = tables.get(name);
 			}
 		}
@@ -130,12 +127,18 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 	@Override
 	public T visitS(PSeintParser.SContext ctx) {
 		//System.out.println("in proc");
-		tables.put(main, new HashMap<>());
-		Symbol func = new Symbol(main, "function");
-		func.value = ctx.block();		
-		functions.put(main, func);
-		currentContext.push(main);
 		visitSubprl(ctx.subprl());
+		String name = ctx.ID().getText();
+		if(functions.containsKey(name)) {
+			int line = ctx.ID().getSymbol().getLine();
+			int col = ctx.ID().getSymbol().getCharPositionInLine()+1;
+			semanticError(line, col, String.format(" el simbolo con nombre \"%s\" ya ha sido declarado.", name));
+		}
+		tables.put(name, new HashMap<>());
+		Symbol func = new Symbol(name, "function");
+		func.value = ctx.block();		
+		functions.put(name, func);
+		currentContext.push(name);		
 		visitBlock(ctx.block());
 		return null;
 	}
@@ -149,12 +152,12 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 			if(!left.second.equals("boolean")) {
 				int line = ctx.expr().start.getLine();
 				int col = ctx.expr().start.getCharPositionInLine()+1;
-				semanticError(line, col, String.format("tipos de datos incompatibles. Se esperaba %s; se encontro: %s", "logico", typeName.get(left.second)));
+				semanticError(line, col, String.format(" tipos de datos incompatibles. Se esperaba %s; se encontro: %s", "logico", typeName.get(left.second)));
 			}
 			if( !right.second.equals("boolean")) {
 				int line = ctx.eA().start.getLine();
 				int col = ctx.eA().start.getCharPositionInLine()+1;
-				semanticError(line, col, String.format("tipos de datos incompatibles. Se esperaba %s; se encontro: %s", "logico", typeName.get(right.second)));
+				semanticError(line, col, String.format(" tipos de datos incompatibles. Se esperaba %s; se encontro: %s", "logico", typeName.get(right.second)));
 			}
 			else {
 				boolean l = (boolean)left.first;
@@ -628,7 +631,7 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 			if(table.containsKey(s.id)) {
 				int line = ctx.ID().getSymbol().getLine();
 				int col = ctx.ID().getSymbol().getCharPositionInLine()+1;
-				semanticError(line, col, String.format("el simbolo con nombre \"%s\" ya ha sido declarado.", s.id));
+				semanticError(line, col, String.format(" el simbolo con nombre \"%s\" ya ha sido declarado.", s.id));
 			}
 			else {
 				table.put(s.id, new Symbol(s.id, s.type));
@@ -636,7 +639,11 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 		}
 		return null;
 	}
-		
+	
+	static boolean isNumeric(String type) {
+		return type.equals("int") | type.equals("real");
+	}
+	
 	@Override
 	public T visitAsig(PSeintParser.AsigContext ctx) {
 		//System.out.println("in asig");
@@ -646,13 +653,16 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 			Symbol sy = table.get(id);
 			//System.out.printf("symbol from table id %s type %s\n", sy.id, sy.type);
 			Pair<Object, String> res = (Pair)visitExpr(ctx.expr());
-			if(res.second.equals(sy.type)) {
-				sy.value = res.first;
+			if(res.second.equals(sy.type) || (isNumeric(res.second) && isNumeric(sy.type))) {
+				if(sy.type.equals("int") && res.second.equals("real"))
+					sy.value = (int)res.first;
+				else
+					sy.value = res.first;
 			}
 			else {
 				int line = ctx.expr().start.getLine();
 				int col = ctx.expr().start.getCharPositionInLine()+1;
-				semanticError(line, col, String.format("tipos de datos incompatibles. Se esperaba: %s; se encontro:%s.", typeName.get(sy.type), typeName.get(res.second)));
+				semanticError(line, col, String.format(" tipos de datos incompatibles. Se esperaba: %s; se encontro:%s.", typeName.get(sy.type), typeName.get(res.second)));
 			}
 		}
 		else {
@@ -771,6 +781,7 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 	
 	@Override
 	public T visitCall(PSeintParser.CallContext ctx) {		
+		//System.out.println("in call");
 		Pair<Object, String> ans = new Pair<>();
 		String name = ctx.ID().getText();
 		if(functions.containsKey(name)) {
@@ -795,26 +806,26 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 				int col = ctx.expr().start.getCharPositionInLine()+1;
 				semanticError(line, col, String.format("el numero de argumentos que recibe la funcion no corresponde con en numero de argumentos pasados."));
 			}
-			returnValue = func.returnId;
+			//returnStack.push(func.returnId);
 			currentContext.push(name);
 			visitBlock(func.block);
-			if(returnValue != null) {
-				Symbol ret = table.get(returnValue);
-				ans.first = ret;
+			//System.out.println("return value "+ func.returnId);
+			if(func.returnId != null) {
+				Symbol ret = table.get(func.returnId);
+				ans.first = ret.value;
 				ans.second = ret.type;
 			}
 			else {
 				ans.first = null;
 				ans.second = null;
 			}
-			returnValue = null;
 			tables.remove(currentContext.peek());
 			currentContext.pop();
 		}
 		else {
 			int line = ctx.ID().getSymbol().getLine();
 			int col = ctx.ID().getSymbol().getCharPositionInLine()+1;
-			semanticError(line, col, String.format("la funcion con nombre \"%s\" no ha sido declarada.", name));
+			semanticError(line, col, String.format(" la funcion con nombre \"%s\" no ha sido declarada.", name));
 		}
 		return (T)ans;
 	}
@@ -862,7 +873,7 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 				ans.second = val.second;
 			}
 			else if(val.second.equals("real")) {
-				ans.first = (double)val.first;
+				ans.first = val.first instanceof Integer? ((Integer)val.first).doubleValue(): val.first;
 				ans.second = val.second;
 			}
 			else if(val.second.equals("boolean")){
