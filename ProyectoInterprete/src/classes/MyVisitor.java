@@ -758,7 +758,7 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 	@Override
 	public T visitFuncexprl(PSeintParser.FuncexprlContext ctx) {
 		ArrayList<Pair> ans = new ArrayList<>();
-		if(ctx != null) {
+		if(ctx != null && ctx.expr() != null) {
 			if(ctx.expr() != null) {
 				Pair p = (Pair)visitExpr(ctx.expr());
 				ans = (ArrayList<Pair>)visitFuncexprl(ctx.funcexprl());
@@ -768,19 +768,17 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 		return (T)ans;
 	}
 	
+	
 	@Override
-	public T visitCall(PSeintParser.CallContext ctx) {
-		//System.out.println("in call");
+	public T visitCall(PSeintParser.CallContext ctx) {		
 		Pair<Object, String> ans = new Pair<>();
 		String name = ctx.ID().getText();
-		//System.out.println("functions");
 		if(functions.containsKey(name)) {
 			tables.put(name, new HashMap<>());
 			Function func = (Function)functions.get(name);			
 			HashMap<String, Symbol> table = tables.get(name);
-			ArrayList<Pair> args = (ArrayList<Pair>)visitFuncexprl(ctx.funcexprl());					
+			ArrayList<Pair> args = (ArrayList<Pair>)visitFuncexprl(ctx.funcexprl());								
 			if(ctx.expr() != null) {
-				//System.out.println("here");
 				Pair value = (Pair)visitExpr(ctx.expr());
 				args.add(value);
 			}
@@ -814,7 +812,9 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 			currentContext.pop();
 		}
 		else {
-			//semanticError();
+			int line = ctx.ID().getSymbol().getLine();
+			int col = ctx.ID().getSymbol().getCharPositionInLine()+1;
+			semanticError(line, col, String.format("la funcion con nombre \"%s\" no ha sido declarada.", name));
 		}
 		return (T)ans;
 	}
@@ -851,8 +851,8 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 				semanticError(line, col, String.format("la variable con nombre \"%s\" no ha sido declarada.", name));
 			}
 		}
-		else if(ctx.call() != null) {
-			Pair<Object, String> val = (Pair)visitCall(ctx.call());
+		else if(ctx.call() != null) {			
+			Pair<Object, String> val = (Pair)visitCall(ctx.call());			
 			if(val.second.equals("string")) {
 				ans.first = (String)val.first;
 				ans.second = val.second;

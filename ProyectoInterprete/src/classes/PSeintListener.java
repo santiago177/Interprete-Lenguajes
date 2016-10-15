@@ -598,36 +598,6 @@ public interface PSeintListener extends ParseTreeListener {
 	 */
 	void exitEH(PSeintParser.EHContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link PSeintParser#t7}.
-	 * @param ctx the parse tree
-	 */
-	void enterT7(PSeintParser.T7Context ctx);
-	/**
-	 * Exit a parse tree produced by {@link PSeintParser#t7}.
-	 * @param ctx the parse tree
-	 */
-	void exitT7(PSeintParser.T7Context ctx);
-	/**
-	 * Enter a parse tree produced by {@link PSeintParser#parexpr}.
-	 * @param ctx the parse tree
-	 */
-	void enterParexpr(PSeintParser.ParexprContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link PSeintParser#parexpr}.
-	 * @param ctx the parse tree
-	 */
-	void exitParexpr(PSeintParser.ParexprContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link PSeintParser#t6}.
-	 * @param ctx the parse tree
-	 */
-	void enterT6(PSeintParser.T6Context ctx);
-	/**
-	 * Exit a parse tree produced by {@link PSeintParser#t6}.
-	 * @param ctx the parse tree
-	 */
-	void exitT6(PSeintParser.T6Context ctx);
-	/**
 	 * Enter a parse tree produced by {@link PSeintParser#tok}.
 	 * @param ctx the parse tree
 	 */

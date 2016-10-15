@@ -365,24 +365,6 @@ public interface PSeintVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitEH(PSeintParser.EHContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link PSeintParser#t7}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitT7(PSeintParser.T7Context ctx);
-	/**
-	 * Visit a parse tree produced by {@link PSeintParser#parexpr}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitParexpr(PSeintParser.ParexprContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link PSeintParser#t6}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitT6(PSeintParser.T6Context ctx);
-	/**
 	 * Visit a parse tree produced by {@link PSeintParser#tok}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

@@ -21,7 +21,7 @@ comid : def | asig | call | write | read | array | cls | spwait ;
 write : ESCRIBIR expr l3 ;
 l3 : TOKEN_COMA expr l3 |  ;
 read : LEER idorv ;
-call : ID TOKEN_PAR_IZQ expr funcexprl TOKEN_PAR_DER |  ; //revisar si se puede llamar funcion sin argumentos
+call : ID TOKEN_PAR_IZQ expr? funcexprl TOKEN_PAR_DER ; //revisar si se puede llamar funcion sin argumentos
 funcexprl : TOKEN_COMA expr funcexprl | ;
 array : DIMENSION ID TOKEN_COR_IZQ expr exprl TOKEN_COR_DER l2 ;
 l2 : TOKEN_COMA ID TOKEN_COR_IZQ expr exprl TOKEN_COR_DER l2 |  ;
@@ -59,16 +59,14 @@ eE : eE TOKEN_MUL eF | eE TOKEN_DIV eF | eE TOKEN_MOD eF | eF;
 eF : eF TOKEN_POT eG | eG; //el operador de potencia no es asociativo por la derecha?
 eG : TOKEN_NEG eG | eH;
 eH : TOKEN_PAR_IZQ expr TOKEN_PAR_DER | tok;
-t7 : op expr |  ;
-parexpr : TOKEN_PAR_IZQ expr TOKEN_PAR_DER ;
-t6 : op expr |  ;
-tok : number | TOKEN_CADENA | call | idarray | VERDADERO | FALSO | TOKEN_MENOS number | call | ID;
+tok : number | TOKEN_CADENA | call | idarray | VERDADERO | FALSO | TOKEN_MENOS number | ID;
 number : TOKEN_REAL | TOKEN_ENTERO;
 idarray : ID TOKEN_COR_IZQ expr exprl TOKEN_COR_DER ;
 cor : TOKEN_COR_IZQ expr exprl TOKEN_COR_DER ;
 op : TOKEN_IGUAL | TOKEN_DIF | TOKEN_MENOR | TOKEN_MAYOR | TOKEN_MENOR_IGUAL | TOKEN_MAYOR_IGUAL | TOKEN_MAS | TOKEN_MENOS | TOKEN_DIV | TOKEN_MUL | TOKEN_MOD | TOKEN_O | TOKEN_Y | TOKEN_COMA | TOKEN_POT ;
 unop : TOKEN_MENOS ;
 tipo : REAL | TEXTO | NUMERICO | LOGICO | NUMERO | CADENA | ENTERO | CARACTER ;
+WS		: [ \t\r\n]+ -> skip ;
 TOKEN_MENOS : '-';
 DE : [dD][eE];
 HACER : [hH][aA][cC][eE][rR];
@@ -149,4 +147,3 @@ TOKEN_CADENA : ['"]~['"]*['"];
 TOKEN_ENTERO : [0-9]+ ;
 TOKEN_REAL : [0-9]+[.][0-9]+;
 ID : [a-zA-Z][a-zA-Z0-9_]*;
-WS		: [ \t\r\n]+ -> skip ;
