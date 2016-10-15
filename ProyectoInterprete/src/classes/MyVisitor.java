@@ -598,22 +598,37 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 		return (T)list;
 	}
 		
+	@Override
+	public T visitTipo(PSeintParser.TipoContext ctx) {
+		String ans = "";
+		if(ctx.TEXTO() != null || ctx.CARACTER() != null || ctx.CADENA() != null)
+			ans = "string";
+		else if(ctx.NUMERO() != null || ctx.ENTERO() != null || ctx.NUMERICO() != null)
+			ans = "int";
+		else if(ctx.REAL() != null)
+			ans = "real";
+		else if(ctx.LOGICO() != null)
+			ans = "boolean";
+		return (T)ans;
+	}	
 	
 	@Override
 	public T visitDef(PSeintParser.DefContext ctx) {
 		String id = ctx.ID().getText();
-		String type = ctx.tipo().getText();
+		String type = (String)visitTipo(ctx.tipo());
 		currentType = type;
-		System.out.println("in def");
-		//System.out.println(currentContext.isEmpty());
+		//System.out.printf("in def type = %s\n", currentType);
+		//System.out.println(currentContext.isEmpty();
 		String funcname = currentContext.peek();
 		HashMap<String, Symbol> table = tables.get(funcname);
 		ArrayList<Symbol> variables = (ArrayList<Symbol>)visitIdl(ctx.idl());
-		variables.add(new Symbol(ctx.ID().getText(), currentType));
 		variables.add(new Symbol(id, type));
 		for(Symbol s: variables) {
+			//System.out.printf("var %s\n", s.id);
 			if(table.containsKey(s.id)) {
-				//semanticError();
+				int line = ctx.ID().getSymbol().getLine();
+				int col = ctx.ID().getSymbol().getCharPositionInLine()+1;
+				semanticError(line, col, String.format("el simbolo con nombre \"%s\" ya ha sido declarado.", s.id));
 			}
 			else {
 				table.put(s.id, new Symbol(s.id, s.type));
@@ -624,21 +639,26 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 		
 	@Override
 	public T visitAsig(PSeintParser.AsigContext ctx) {
-		System.out.println("in asig");
+		//System.out.println("in asig");
 		String id = ctx.ID().getText();
-		HashMap<String, Symbol> table = tables.get(currentContext.peek());
+		HashMap<String, Symbol> table = tables.get(currentContext.peek());		
 		if(table.containsKey(id)) {
 			Symbol sy = table.get(id);
+			//System.out.printf("symbol from table id %s type %s\n", sy.id, sy.type);
 			Pair<Object, String> res = (Pair)visitExpr(ctx.expr());
 			if(res.second.equals(sy.type)) {
 				sy.value = res.first;
 			}
 			else {
-				//semanticError(line, col);
+				int line = ctx.expr().start.getLine();
+				int col = ctx.expr().start.getCharPositionInLine()+1;
+				semanticError(line, col, String.format("tipos de datos incompatibles. Se esperaba: %s; se encontro:%s.", typeName.get(sy.type), typeName.get(res.second)));
 			}
 		}
 		else {
-			//semanticError();
+			int line = ctx.expr().start.getLine();
+			int col = ctx.expr().start.getCharPositionInLine()+1;
+			semanticError(line, col, String.format("la variable con nombre \"%s\" no ha sido declarada.", id));
 		}
 		return null;
 	}
@@ -710,6 +730,7 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 	public T visitL5(PSeintParser.L5Context ctx) {
 		if(ctx.storcom() != null) {
 			visitStorcom(ctx.storcom());
+			visitL5(ctx.l5());
 		}
 		return null;
 	}
