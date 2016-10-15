@@ -660,8 +660,9 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 					int col = ctx.expr().start.getCharPositionInLine()+1;
 					semanticError(line, col, String.format(" tipos de datos incompatibles. Se esperaba: %s; se encontro:%s.", "int", "real"));
 				}
-				else
+                                else{
 					sy.value = res.first;
+                                }
 			}
 			else {
 				int line = ctx.expr().start.getLine();
@@ -741,10 +742,252 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 		return null;
 	}
 	
-	@Override
+        @Override public T visitStif(PSeintParser.StifContext ctx) { 
+                Pair<Object, String> ans = new Pair<>();
+                ans = (Pair) visitExpr(ctx.expr());
+                if( ans.second.equals("boolean") ){
+                    if( (boolean) ans.first ){
+                        visitBlock(ctx.block());
+                    }else{
+                        if( ctx.elif() != null ){
+                            visitElif(ctx.elif());
+                        }
+                    }
+                }else{
+                    int line = ctx.expr().start.getLine();
+                    int col = ctx.expr().start.getCharPositionInLine()+1;
+                    semanticError(line, col, String.format("tipos de datos incompatibles. Se esperaba: logico; se encontro:%s.",typeName.get(ans.second)));                                                                
+                }
+                return null;
+        }
+        
+        @Override public T visitElif(PSeintParser.ElifContext ctx) { 
+                if( ctx.block() != null ){
+                    visitBlock(ctx.block());
+                }
+                return null;
+        }
+        
+        @Override public T visitStwhile(PSeintParser.StwhileContext ctx) { 
+                Pair<Object, String> ans = new Pair<>();
+                ans = (Pair) visitExpr(ctx.expr());
+                if( ans.second.equals("boolean") ){
+                    while( (boolean) ans.first ){
+                        visitBlock(ctx.block());
+                        ans = (Pair) visitExpr(ctx.expr());
+                    }
+                }else{
+                    int line = ctx.expr().start.getLine();
+                    int col = ctx.expr().start.getCharPositionInLine()+1;
+                    semanticError(line, col, String.format("tipos de datos incompatibles. Se esperaba: logico; se encontro:%s.",typeName.get(ans.second)));                                                                
+                }
+                return null;
+        }
+        
+        @Override public T visitDowhile(PSeintParser.DowhileContext ctx) { 
+                Pair<Object, String> ans = new Pair<>();
+                do{ 
+                    visitBlock(ctx.block());    
+                    ans = (Pair) visitExpr(ctx.expr());
+                    if( !ans.second.equals("boolean") ){
+                        int line = ctx.expr().start.getLine();
+                        int col = ctx.expr().start.getCharPositionInLine()+1;
+                        semanticError(line, col, String.format("tipos de datos incompatibles. Se esperaba: logico; se encontro:%s.",typeName.get(ans.second)));                                                                
+                    }
+                }while( !(boolean) ans.first );
+                return null;
+        }
+        
+        @Override public T visitStdefault(PSeintParser.StdefaultContext ctx) { 
+            if( ctx.block() != null ){
+                visitBlock(ctx.block());
+            }
+            return null; 
+        }
+        
+        boolean enteroption = false;
+        int opt = 0;
+        @Override public T visitL4(PSeintParser.L4Context ctx) { 
+            if( ctx.expr() != null ){
+                Pair<Object, String> ans = new Pair<>();
+                ans = (Pair) visitExpr(ctx.expr());
+                if( !ans.second.equals("int") ){
+                    int line = ctx.expr().start.getLine();
+                    int col = ctx.expr().start.getCharPositionInLine()+1;
+                    semanticError(line, col, String.format("tipos de datos incompatibles. Se esperaba: entero; se encontro:%s.",typeName.get(ans.second)));                                            
+                }
+                int option = (int) ans.first;
+                if( option == opt ){
+                    enteroption = true;
+                    visitBlock(ctx.block());
+                }else{
+                    visitL4(ctx.l4());
+                }
+            }
+            return null;
+        }
+        
+        @Override public T visitCasel(PSeintParser.CaselContext ctx) {
+                if( ctx.expr() != null ){
+                    Pair<Object, String> ans = new Pair<>();
+                    ans = (Pair) visitExpr(ctx.expr());
+                    if( !ans.second.equals("int") ){
+                        int line = ctx.expr().start.getLine();
+                        int col = ctx.expr().start.getCharPositionInLine()+1;
+                        semanticError(line, col, String.format("tipos de datos incompatibles. Se esperaba: entero; se encontro:%s.",typeName.get(ans.second)));                        
+                    }
+                    int option = (int) ans.first;
+                    if( option==opt ){
+                        enteroption = true;
+                        visitBlock(ctx.block());
+                    }
+                    else{
+                        visitL4(ctx.l4());
+                    }
+                }
+                if( !enteroption ){
+                    visitStdefault(ctx.stdefault());
+                }
+                return null;
+        }
+        
+        @Override public T visitStswitch(PSeintParser.StswitchContext ctx) { 
+                Pair<Object, String> ans = new Pair<>();
+                ans = (Pair) visitExpr(ctx.expr());
+                if( ans.second.equals("int") ){
+                    opt = (int) ans.first;
+                    visitCasel(ctx.casel());
+                }else{
+                    int line = ctx.expr().start.getLine();
+                    int col = ctx.expr().start.getCharPositionInLine()+1;
+                    semanticError(line, col, String.format("tipos de datos incompatibles. Se esperaba: entero; se encontro:%s.",typeName.get(ans.second)));                    
+                }
+                return null; 
+        } 
+        
+        @Override public T visitExprl(PSeintParser.ExprlContext ctx) { 
+            if( ctx.expr() != null ){
+                visitExpr(ctx.expr());
+            }
+            return null;
+        }
+        
+        @Override public T visitCor(PSeintParser.CorContext ctx) { 
+            if( ctx.expr() != null ){
+                visitExpr(ctx.expr());
+                visitExprl(ctx.exprl());
+            }
+            return null; 
+        }
+        
+        @Override public T visitT9(PSeintParser.T9Context ctx) { 
+            if( ctx.cor() != null ){
+                visitCor(ctx.cor());
+            }
+            return null;
+        }
+        
+        @Override public T visitIdxorv(PSeintParser.IdxorvContext ctx) { 
+            if( ctx.ID() != null ){
+                String id = ctx.ID().getText();
+                visitT9(ctx.t9());
+                return (T)id;
+            }
+            return null; 
+        }
+        
+        @Override public T visitOasig(PSeintParser.OasigContext ctx) { 
+            if( ctx.idxorv() != null ){
+                String id = (String) visitIdxorv(ctx.idxorv());
+		HashMap<String, Symbol> table = tables.peek();		
+		if(table.containsKey(id)) {
+			Symbol sy = table.get(id);
+			Pair<Object, String> res = (Pair)visitExpr(ctx.expr());
+			if(res.second.equals(sy.type) || (isNumeric(res.second) && isNumeric(sy.type))) {
+				if(sy.type.equals("int") && res.second.equals("real")) {
+					int line = ctx.expr().start.getLine();
+					int col = ctx.expr().start.getCharPositionInLine()+1;
+					semanticError(line, col, String.format(" tipos de datos incompatibles. Se esperaba: %s; se encontro:%s.", "int", "real"));
+				}
+                                else{
+                                    sy.value = res.first;
+                                    return (T)res;
+                                }
+			}
+			else {
+				int line = ctx.expr().start.getLine();
+				int col = ctx.expr().start.getCharPositionInLine()+1;
+				semanticError(line, col, String.format(" tipos de datos incompatibles. Se esperaba: %s; se encontro:%s.", typeName.get(sy.type), typeName.get(res.second)));
+			}
+		}
+		else {
+			int line = ctx.expr().start.getLine();
+			int col = ctx.expr().start.getCharPositionInLine()+1;
+			semanticError(line, col, String.format(" la variable con nombre \"%s\" no ha sido declarada.", id));
+		}
+            }    
+            return null;                                 
+        }
+        
+        @Override public T visitStep(PSeintParser.StepContext ctx) { 
+            if( ctx.expr() != null ){
+                return visitExpr(ctx.expr());
+            }
+            return null;
+        }
+        
+        //stfor : PARA oasig HASTA expr step HACER block FINPARA ;
+        @Override public T visitStfor(PSeintParser.StforContext ctx) { 
+            if( ctx.oasig() != null ){
+                Pair<Object, String> ans = new Pair<>();
+                Pair<Object, String> ans2 = new Pair<>();
+                ans = (Pair)visitOasig(ctx.oasig());
+                if( !ans.second.equals("int") ){
+                    int line = ctx.expr().start.getLine();
+                    int col = ctx.expr().start.getCharPositionInLine()+1;
+                    semanticError(line, col, String.format("tipos de datos incompatibles. Se esperaba: entero; se encontro:%s.",typeName.get(ans.second)));
+                }
+                int init = (int) ans.first;
+                ans2 = (Pair)visitExpr(ctx.expr());
+                if( !ans2.second.equals("int") ){
+                    int line = ctx.expr().start.getLine();
+                    int col = ctx.expr().start.getCharPositionInLine()+1;
+                    semanticError(line, col, String.format("tipos de datos incompatibles. Se esperaba: entero; se encontro:%s.",typeName.get(ans2.second)));
+                }
+                int limit = (int)ans2.first;
+                int inc = 1; 
+                if( visitStep(ctx.step()) != null ){
+                    Pair<Object, String> ans3 = new Pair<>();
+                    ans3 = (Pair) visitStep(ctx.step());
+                    if( !ans3.second.equals("int") ){
+                        int line = ctx.expr().start.getLine();
+                        int col = ctx.expr().start.getCharPositionInLine()+1;
+                        semanticError(line, col, String.format("tipos de datos incompatibles. Se esperaba: entero; se encontro:%s.",typeName.get(ans3.second)));                        
+                    }
+                    inc = (int) ans3.first;
+                }
+                for (int i = init; i <= limit ; i = i + inc) {
+                    visitBlock(ctx.block());
+                }
+            }
+            return null;
+        }
+                       
+        @Override
 	public T visitStatement(PSeintParser.StatementContext ctx) {
-		return visitChildren(ctx);
-	}
+                if( ctx.stif() != null ){
+                    return visitStif(ctx.stif());
+                }else if( ctx.stwhile() != null ){
+                    return visitStwhile(ctx.stwhile());
+                }else if( ctx.dowhile() != null ){
+                    return visitDowhile(ctx.dowhile());
+                }else if( ctx.stswitch() != null ){
+                    return visitStswitch(ctx.stswitch());
+                }else if( ctx.stfor() != null ){
+                    return visitStfor(ctx.stfor());
+                }
+		return null;
+	}	
 	
 	@Override
 	public T visitL5(PSeintParser.L5Context ctx) {
