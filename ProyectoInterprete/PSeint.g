@@ -22,7 +22,7 @@ write : ESCRIBIR expr l3 ;
 l3 : TOKEN_COMA expr l3 |  ;
 read : LEER idorv ;
 call : ID TOKEN_PAR_IZQ expr funcexprl TOKEN_PAR_DER |  ; //revisar si se puede llamar funcion sin argumentos
-funcexprl : TOKEN_COMA expr | ;
+funcexprl : TOKEN_COMA expr funcexprl | ;
 array : DIMENSION ID TOKEN_COR_IZQ expr exprl TOKEN_COR_DER l2 ;
 l2 : TOKEN_COMA ID TOKEN_COR_IZQ expr exprl TOKEN_COR_DER l2 |  ;
 exprl : TOKEN_COMA expr |  ;
