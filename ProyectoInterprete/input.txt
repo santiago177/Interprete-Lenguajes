@@ -1,5 +1,9 @@
-proceso miproceso
-    definir a como entero;
-    a <- 1.6+0.5;
-    escribir a;
-finproceso
+Proceso sin_titulo
+    Definir i,j,k Como Entero;
+   
+    Para i<-0 Hasta 1 Hacer
+        Para j<-0 Hasta 1 con paso 1 Hacer
+            escribir i,j;
+        FinPara
+    FinPara
+FinProceso

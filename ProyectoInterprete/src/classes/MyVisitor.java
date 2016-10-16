@@ -1103,6 +1103,10 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
                 }
                 for (int i = init; i <= limit ; i = i + inc) {
                     visitBlock(ctx.block());
+                    String id = (String)ctx.oasig().idxorv().ID().getText();
+                    HashMap<String, Symbol> table = tables.peek();                    
+                    Symbol sy = table.get(id);
+                    sy.value = (int)ans.first+inc;
                 }
             }
             return null;
