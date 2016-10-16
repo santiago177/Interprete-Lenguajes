@@ -366,15 +366,31 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 			Pair<Object, String> left = (Pair)visitEC(ctx.eC());
 			Pair<Object, String> right = (Pair)visitED(ctx.eD());
 			if(left.second.equals("boolean") || right.second.equals("boolean")) {
-				//semanticError();
+				if(left.second.equals("boolean")){
+					int line = ctx.eC().start.getLine();
+					int col = ctx.eC().start.getCharPositionInLine()+1;
+					semanticError(line, col, String.format(" tipos de datos incompatibles. Se esperaba entero o real o cadena; se encontro: %s", left.second));
+				}
+				if(right.second.equals("boolean")){
+					int line = ctx.eD().start.getLine();
+					int col = ctx.eD().start.getCharPositionInLine()+1;
+					semanticError(line, col, String.format(" tipos de datos incompatibles. Se esperaba entero o real o cadena; se encontro: %s", right.second));
+				}
 			}
 			else {				
-				if(left.second.equals("string")) {
-					if(!right.second.equals("string")){
-						//semanticError();
+				if(left.second.equals("string") || right.second.equals("string")) {
+					if(!left.second.equals("string")){
+						int line = ctx.eC().start.getLine();
+						int col = ctx.eC().start.getCharPositionInLine()+1;
+						semanticError(line, col, String.format(" tipos de datos incompatibles. Se esperaba cadena; se encontro: %s", left.second));
+					}
+					else if(!right.second.equals("string")){
+						int line = ctx.eD().start.getLine();
+						int col = ctx.eD().start.getCharPositionInLine()+1;
+						semanticError(line, col, String.format(" tipos de datos incompatibles. Se esperaba cadena; se encontro: %s", right.second));
 					}
 					else {
-						ans.first = ((String)left.first).compareTo((String)right.first) < 0;
+						ans.first = ((String)left.first).compareTo((String)right.first) > 0;
 						ans.second = "boolean";
 					}
 				}
@@ -390,15 +406,31 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 			Pair<Object, String> left = (Pair)visitEC(ctx.eC());
 			Pair<Object, String> right = (Pair)visitED(ctx.eD());
 			if(left.second.equals("boolean") || right.second.equals("boolean")) {
-				//semanticError();
+				if(left.second.equals("boolean")){
+					int line = ctx.eC().start.getLine();
+					int col = ctx.eC().start.getCharPositionInLine()+1;
+					semanticError(line, col, String.format(" tipos de datos incompatibles. Se esperaba entero o real o cadena; se encontro: %s", left.second));
+				}
+				if(right.second.equals("boolean")){
+					int line = ctx.eD().start.getLine();
+					int col = ctx.eD().start.getCharPositionInLine()+1;
+					semanticError(line, col, String.format(" tipos de datos incompatibles. Se esperaba entero o real o cadena; se encontro: %s", right.second));
+				}
 			}
 			else {		
-				if(left.second.equals("string")) {
-					if(!right.second.equals("string")){
-						//semanticError();
+				if(left.second.equals("string") || right.second.equals("string")) {
+					if(!left.second.equals("string")){
+						int line = ctx.eC().start.getLine();
+						int col = ctx.eC().start.getCharPositionInLine()+1;
+						semanticError(line, col, String.format(" tipos de datos incompatibles. Se esperaba cadena; se encontro: %s", left.second));
+					}
+					else if(!right.second.equals("string")){
+						int line = ctx.eD().start.getLine();
+						int col = ctx.eD().start.getCharPositionInLine()+1;
+						semanticError(line, col, String.format(" tipos de datos incompatibles. Se esperaba cadena; se encontro: %s", right.second));
 					}
 					else {
-						ans.first = ((String)left.first).compareTo((String)right.first) < 0 || ((String)left.first).equals((String)right.first);
+						ans.first = ((String)left.first).compareTo((String)right.first) > 0;
 						ans.second = "boolean";
 					}
 				}
@@ -414,12 +446,28 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 			Pair<Object, String> left = (Pair)visitEC(ctx.eC());
 			Pair<Object, String> right = (Pair)visitED(ctx.eD());
 			if(left.second.equals("boolean") || right.second.equals("boolean")) {
-				//semanticError();
+				if(left.second.equals("boolean")){
+					int line = ctx.eC().start.getLine();
+					int col = ctx.eC().start.getCharPositionInLine()+1;
+					semanticError(line, col, String.format(" tipos de datos incompatibles. Se esperaba entero o real o cadena; se encontro: %s", left.second));
+				}
+				if(right.second.equals("boolean")){
+					int line = ctx.eD().start.getLine();
+					int col = ctx.eD().start.getCharPositionInLine()+1;
+					semanticError(line, col, String.format(" tipos de datos incompatibles. Se esperaba entero o real o cadena; se encontro: %s", right.second));
+				}
 			}
 			else {				
-				if(left.second.equals("string")) {
-					if(!right.second.equals("string")){
-						//semanticError();
+				if(left.second.equals("string") || right.second.equals("string")) {
+					if(!left.second.equals("string")){
+						int line = ctx.eC().start.getLine();
+						int col = ctx.eC().start.getCharPositionInLine()+1;
+						semanticError(line, col, String.format(" tipos de datos incompatibles. Se esperaba cadena; se encontro: %s", left.second));
+					}
+					else if(!right.second.equals("string")){
+						int line = ctx.eD().start.getLine();
+						int col = ctx.eD().start.getCharPositionInLine()+1;
+						semanticError(line, col, String.format(" tipos de datos incompatibles. Se esperaba cadena; se encontro: %s", right.second));
 					}
 					else {
 						ans.first = ((String)left.first).compareTo((String)right.first) > 0;
@@ -438,12 +486,28 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 			Pair<Object, String> left = (Pair)visitEC(ctx.eC());
 			Pair<Object, String> right = (Pair)visitED(ctx.eD());
 			if(left.second.equals("boolean") || right.second.equals("boolean")) {
-				//semanticError();
+				if(left.second.equals("boolean")){
+					int line = ctx.eC().start.getLine();
+					int col = ctx.eC().start.getCharPositionInLine()+1;
+					semanticError(line, col, String.format(" tipos de datos incompatibles. Se esperaba entero o real o cadena; se encontro: %s", typeName.get(left.second)));
+				}
+				if(right.second.equals("boolean")){
+					int line = ctx.eD().start.getLine();
+					int col = ctx.eD().start.getCharPositionInLine()+1;
+					semanticError(line, col, String.format(" tipos de datos incompatibles. Se esperaba entero o real o cadena; se encontro: %s", typeName.get(right.second)));
+				}
 			}
 			else {				
-				if(left.second.equals("string")) {
-					if(!right.second.equals("string")){
-						//semanticError();
+				if(left.second.equals("string") || right.second.equals("string")) {
+					if(!left.second.equals("string")){
+						int line = ctx.eC().start.getLine();
+						int col = ctx.eC().start.getCharPositionInLine()+1;
+						semanticError(line, col, String.format(" tipos de datos incompatibles. Se esperaba cadena; se encontro: %s", typeName.get(left.second)));
+					}
+					else if(!right.second.equals("string")){
+						int line = ctx.eD().start.getLine();
+						int col = ctx.eD().start.getCharPositionInLine()+1;
+						semanticError(line, col, String.format(" tipos de datos incompatibles. Se esperaba cadena; se encontro: %s", typeName.get(right.second)));
 					}
 					else {
 						ans.first = ((String)left.first).compareTo((String)right.first) > 0 || ((String)left.first).equals((String)right.first);
@@ -470,8 +534,16 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 		if(ctx.TOKEN_MAS() != null) {
 			Pair<Object, String> left = (Pair)visitED(ctx.eD());
 			Pair<Object, String> right = (Pair)visitEE(ctx.eE());
-			if(!(left.second.equals("int") || left.second.equals("real")) || !(right.second.equals("int") || right.second.equals("real"))) {
-				//semanticError();
+			//System.out.printf("in sum %s %s\n", left.second, right.second);
+			if(!isNumeric(left.second)) {
+				int line = ctx.eD().start.getLine();
+				int col = ctx.eD().start.getCharPositionInLine()+1;
+				semanticError(line, col, String.format(" tipos de datos incompatibles. Se esperaba entero o real; se encontro: %s", typeName.get(left.second)));
+			}
+			else if(!isNumeric(right.second)) {
+				int line = ctx.eD().start.getLine();
+				int col = ctx.eD().start.getCharPositionInLine()+1;
+				semanticError(line, col, String.format(" tipos de datos incompatibles. Se esperaba entero o real; se encontro: %s", typeName.get(right.second)));
 			}
 			else {
 				double l = left.first instanceof Integer?((Integer)left.first).doubleValue() : (double)left.first;
@@ -1073,6 +1145,7 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
         
         //stfor : PARA oasig HASTA expr step HACER block FINPARA ;
         @Override public T visitStfor(PSeintParser.StforContext ctx) { 
+        	System.out.println("in for");
             if( ctx.oasig() != null ){
                 Pair<Object, String> ans = new Pair<>();
                 Pair<Object, String> ans2 = new Pair<>();
@@ -1105,7 +1178,7 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
                     visitBlock(ctx.block());
                     String id = (String)ctx.oasig().idxorv().ID().getText();                    
                     HashMap<String, Symbol> table = tables.peek(); 
-                    //System.out.printf("id %s value %d inc %d\n", id, (int)table.get(id).value, inc);
+                    System.out.printf("id %s value %d inc %d\n", id, (int)table.get(id).value, inc);
                     Symbol sy = table.get(id);
                     sy.value = (int)sy.value+inc;
                 }
@@ -1410,6 +1483,7 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 	public T visitWrite(PSeintParser.WriteContext ctx) {
 		//System.out.println("at write");
 		Pair  p = (Pair)visitExpr(ctx.expr());
+		//System.out.println("first "+p.first);
 		String start = p.first.toString();
 		if(p.second.equals("boolean"))
 			start = (boolean)p.first?"verdadero":"falso";
