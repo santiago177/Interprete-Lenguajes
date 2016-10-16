@@ -1126,31 +1126,33 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 	
 	
 	@Override
-	public T visitCall(PSeintParser.CallContext ctx) {		
-		//System.out.println("in call");
+	public T visitCall(PSeintParser.CallContext ctx) {				
 		Pair<Object, String> ans = new Pair<>();
 		String name = ctx.ID().getText();
+		//System.out.printf("in call name %s\n", name);
 		if(functions.containsKey(name)) {
-			tables.push(new HashMap<>());
-			Function func = (Function)functions.get(name);			
-			HashMap<String, Symbol> table = tables.peek();
+			//System.out.println("in");			
+			Function func = (Function)functions.get(name);						
 			ArrayList<Pair> args = (ArrayList<Pair>)visitFuncexprl(ctx.funcexprl());								
 			if(ctx.expr() != null) {
 				Pair value = (Pair)visitExpr(ctx.expr());
 				args.add(value);
-			}
+			}			
+			tables.push(new HashMap<>());
+			HashMap<String, Symbol> table = tables.peek();
 			if(func.args.size() == args.size()) {
 				for(int i = 0; i < args.size(); i++) {
 					String id = func.args.get(i).id;
 					Symbol sy = new Symbol(id, (String)args.get(i).second);
 					sy.value = args.get(i).first;
+					//System.out.println("put "+id);
 					table.put(id, sy);
 				}
 			}
 			else {
 				int line = ctx.TOKEN_PAR_IZQ().getSymbol().getLine();
 				int col = ctx.TOKEN_PAR_IZQ().getSymbol().getCharPositionInLine()+1;
-				semanticError(line, col, String.format("el numero de argumentos que recibe la funcion no corresponde con en numero de argumentos pasados."));
+				semanticError(line, col, String.format(" el numero de argumentos que recibe la funcion no corresponde con en numero de argumentos pasados."));
 			}
 			//returnStack.push(func.returnId);
 			//currentContext.push(name);
