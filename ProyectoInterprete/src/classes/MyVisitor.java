@@ -77,8 +77,8 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 			int index = indexes.get(i);				
 			int dimension = array.dimensions.get(i);
 			if(index < 0 || index >= dimension) {
-				int line = ctx.expr().start.getLine();
-				int col = ctx.expr().start.getCharPositionInLine()+1;
+				int line = ctx.start.getLine();
+				int col = ctx.start.getCharPositionInLine()+1;
 				runtimeError(line, col, String.format(" Se accedio a una posicion no valida del arreglo: %s", index));
 			}
 			idx += index*dim;
@@ -1103,10 +1103,11 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
                 }
                 for (int i = init; i <= limit ; i = i + inc) {
                     visitBlock(ctx.block());
-                    String id = (String)ctx.oasig().idxorv().ID().getText();
-                    HashMap<String, Symbol> table = tables.peek();                    
+                    String id = (String)ctx.oasig().idxorv().ID().getText();                    
+                    HashMap<String, Symbol> table = tables.peek(); 
+                    //System.out.printf("id %s value %d inc %d\n", id, (int)table.get(id).value, inc);
                     Symbol sy = table.get(id);
-                    sy.value = (int)ans.first+inc;
+                    sy.value = (int)sy.value+inc;
                 }
             }
             return null;
