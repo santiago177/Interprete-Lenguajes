@@ -1168,19 +1168,31 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
                     Pair<Object, String> ans3 = new Pair<>();
                     ans3 = (Pair) visitStep(ctx.step());
                     if( !ans3.second.equals("int") ){
-                        int line = ctx.expr().start.getLine();
-                        int col = ctx.expr().start.getCharPositionInLine()+1;
-                        semanticError(line, col, String.format(" tipos de datos incompatibles. Se esperaba: entero; se encontro:%s.",typeName.get(ans3.second)));                        
+                        //System.out.println(ctx.step().expr().getText());
+                        int line = ctx.step().expr().start.getLine();
+                        int col = ctx.step().expr().start.getCharPositionInLine()+1;
+                        semanticError(line, col, String.format(" tipos de datos incompatibles. Se esperaba: entero; se encontro: %s.",typeName.get(ans3.second)));                        
                     }
                     inc = (int) ans3.first;
                 }
-                for (int i = init; i <= limit ; i = i + inc) {
-                    visitBlock(ctx.block());
-                    String id = (String)ctx.oasig().idxorv().ID().getText();                    
-                    HashMap<String, Symbol> table = tables.peek(); 
-                    System.out.printf("id %s value %d inc %d\n", id, (int)table.get(id).value, inc);
-                    Symbol sy = table.get(id);
-                    sy.value = (int)sy.value+inc;
+                if( inc < 0 ){
+                    for (int i = init; i >= limit ; i = i + inc) {
+                        visitBlock(ctx.block());
+                        String id = (String)ctx.oasig().idxorv().ID().getText();                    
+                        HashMap<String, Symbol> table = tables.peek(); 
+                        //System.out.printf("id %s value %d inc %d\n", id, (int)table.get(id).value, inc);
+                        Symbol sy = table.get(id);
+                        sy.value = (int)sy.value+inc;
+                    }
+                }else{
+                    for (int i = init; i <= limit ; i = i + inc) {
+                        visitBlock(ctx.block());
+                        String id = (String)ctx.oasig().idxorv().ID().getText();                    
+                        HashMap<String, Symbol> table = tables.peek(); 
+                        //System.out.printf("id %s value %d inc %d\n", id, (int)table.get(id).value, inc);
+                        Symbol sy = table.get(id);
+                        sy.value = (int)sy.value+inc;
+                    }
                 }
             }
             return null;
