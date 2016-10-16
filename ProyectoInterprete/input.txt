@@ -1,0 +1,59 @@
+Funcion x <-sum(a, b)
+    definir x como entero;
+    x <- a+b;
+finfuncion
+
+Proceso mi_proceso
+
+    definir as como entero;
+    dimension as[5,6];
+    as[2,5] <- 5;
+    escribir as[2,5];
+
+    escribir sum(1,1)*sum(1,1);
+
+    Escribir "Hola";
+    definir a como entero;
+    a <- 7^2;
+    si a > 19  entonces
+        Escribir "siii";
+    Sino
+        Escribir "sinoo";
+    finsi
+    definir b como entero;
+    b <- 0;
+    Mientras b <=3  Hacer
+	escribir "hola";
+        b <- b + 1;
+    FinMientras
+    definir c como entero;
+    c <- 0;
+    Repetir
+        escribir "perro";
+        c <- c + 1;
+    Hasta Que c >= 3
+    Definir i,j,k Como Entero;
+    Para i<-0 Hasta 1 Hacer
+        Para j<-0 Hasta 1 con paso 1 Hacer
+            Para k<-0 Hasta 1 con paso 1 Hacer
+                escribir "casa";
+            FinPara
+        FinPara
+    FinPara
+
+    Definir z Como Entero;
+    Definir m Como cadena;
+    z <- 2;
+    m <- "";
+    segun z hacer
+        caso 1:
+            Escribir 1;
+        caso 2:
+            Escribir 2;
+        caso 3:
+            Escribir 3;
+        De otro modo:
+           Escribir "otro";
+    FinSegun
+
+finproceso
