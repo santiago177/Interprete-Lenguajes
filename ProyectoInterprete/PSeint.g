@@ -66,6 +66,8 @@ op : TOKEN_IGUAL | TOKEN_DIF | TOKEN_MENOR | TOKEN_MAYOR | TOKEN_MENOR_IGUAL | T
 unop : TOKEN_MENOS ;
 tipo : REAL | TEXTO | NUMERICO | LOGICO | NUMERO | CADENA | ENTERO | CARACTER ;
 WS		: [ \t\r\n]+ -> skip ;
+COMMENT 		: '/*' .*? '*/' -> skip ;
+LINE_COMMENT 	: '//' ~[\r\n]* -> skip ;
 TOKEN_MENOS : '-';
 DE : [dD][eE];
 HACER : [hH][aA][cC][eE][rR];
