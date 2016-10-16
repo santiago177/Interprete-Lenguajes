@@ -60,7 +60,7 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 			if(index < 0 || index >= dimension) {
 				int line = ctx.expr().start.getLine();
 				int col = ctx.expr().start.getCharPositionInLine()+1;
-				runtimeError(line, col, String.format(" Se accedio a una posicion no valida del arreglo: %s", index));
+				runtimeError(line, col, String.format(" Se accedio a una posicion no valida del arreglo: %s.", index));
 			}
 			idx += index*dim;
 			dim *= dimension;
@@ -79,7 +79,7 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 			if(index < 0 || index >= dimension) {
 				int line = ctx.start.getLine();
 				int col = ctx.start.getCharPositionInLine()+1;
-				runtimeError(line, col, String.format(" Se accedio a una posicion no valida del arreglo: %s", index));
+				runtimeError(line, col, String.format(" Se accedio a una posicion no valida del arreglo: %s.", index));
 			}
 			idx += index*dim;
 			dim *= dimension;
@@ -745,7 +745,7 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 		variables.add(new Symbol(id, type));
 		for(Symbol s: variables) {
 			//System.out.printf("var %s\n", s.id);
-			if(table.containsKey(s.id)) {
+			if(table.containsKey(s.id) || functions.containsKey(s.id)) {
 				int line = ctx.ID().getSymbol().getLine();
 				int col = ctx.ID().getSymbol().getCharPositionInLine()+1;
 				semanticError(line, col, String.format(" el simbolo con nombre \"%s\" ya ha sido declarado.", s.id));
@@ -930,12 +930,13 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 		}
 		else if(ctx.call() != null) {
 			Pair<Object, String> ret;
-			ret = (Pair)visitCall(ctx.call());
-			if(ret.first != null) {
+			Function f = (Function)functions.get(ctx.call().ID().getText());
+			if(f.returnId != null) {
 				int line = ctx.call().start.getLine();
 				int col = ctx.call().start.getCharPositionInLine()+1;
 				semanticError(line, col, String.format(" la funcion \"%s\" retorna un valor que debe ir en una expresion.", ctx.call().ID()));
 			}
+			ret = (Pair)visitCall(ctx.call());			
 		} 
 		else if (ctx.write() != null) {
 			visitWrite(ctx.write());
@@ -1145,7 +1146,6 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
         
         //stfor : PARA oasig HASTA expr step HACER block FINPARA ;
         @Override public T visitStfor(PSeintParser.StforContext ctx) { 
-        	System.out.println("in for");
             if( ctx.oasig() != null ){
                 Pair<Object, String> ans = new Pair<>();
                 Pair<Object, String> ans2 = new Pair<>();
@@ -1270,9 +1270,9 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 				}
 			}
 			else {
-				int line = ctx.TOKEN_PAR_IZQ().getSymbol().getLine();
-				int col = ctx.TOKEN_PAR_IZQ().getSymbol().getCharPositionInLine()+1;
-				semanticError(line, col, String.format(" el numero de argumentos que recibe la funcion no corresponde con en numero de argumentos pasados."));
+				int line = ctx.ID().getSymbol().getLine();
+				int col = ctx.ID().getSymbol().getCharPositionInLine()+1;
+				semanticError(line, col, String.format(" numero incorrecto de parametros al llamar la funcion \"%s\".", name));
 			}
 			//returnStack.push(func.returnId);
 			//currentContext.push(name);
@@ -1334,8 +1334,14 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
 				semanticError(line, col, String.format(" la variable con nombre \"%s\" no ha sido inicializada.", ctx.getText()));
 			}
 		}
-		else if(ctx.call() != null) {			
-			Pair<Object, String> val = (Pair)visitCall(ctx.call());			
+		else if(ctx.call() != null) {						
+			Function f = (Function) functions.get(ctx.call().ID().getText());
+			if(f.returnId == null) {
+				int line = ctx.call().start.getLine();
+				int col = ctx.call().start.getCharPositionInLine()+1;
+				semanticError(line, col, String.format(" la funcion \"%s\" es usada en una expresion pero no retorna ningun valor.", ctx.call().ID().getText()));
+			}
+			Pair<Object, String> val = (Pair)visitCall(ctx.call());
 			if(val.second.equals("string")) {
 				ans.first = (String)val.first;
 				ans.second = val.second;
