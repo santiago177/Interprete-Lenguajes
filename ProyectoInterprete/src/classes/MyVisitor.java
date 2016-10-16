@@ -1080,14 +1080,14 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
                 if( !ans.second.equals("int") ){
                     int line = ctx.expr().start.getLine();
                     int col = ctx.expr().start.getCharPositionInLine()+1;
-                    semanticError(line, col, String.format("tipos de datos incompatibles. Se esperaba: entero; se encontro:%s.",typeName.get(ans.second)));
+                    semanticError(line, col, String.format(" tipos de datos incompatibles. Se esperaba: entero; se encontro:%s.",typeName.get(ans.second)));
                 }
                 int init = (int) ans.first;
                 ans2 = (Pair)visitExpr(ctx.expr());
                 if( !ans2.second.equals("int") ){
                     int line = ctx.expr().start.getLine();
                     int col = ctx.expr().start.getCharPositionInLine()+1;
-                    semanticError(line, col, String.format("tipos de datos incompatibles. Se esperaba: entero; se encontro:%s.",typeName.get(ans2.second)));
+                    semanticError(line, col, String.format(" tipos de datos incompatibles. Se esperaba: entero; se encontro:%s.",typeName.get(ans2.second)));
                 }
                 int limit = (int)ans2.first;
                 int inc = 1; 
@@ -1097,7 +1097,7 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
                     if( !ans3.second.equals("int") ){
                         int line = ctx.expr().start.getLine();
                         int col = ctx.expr().start.getCharPositionInLine()+1;
-                        semanticError(line, col, String.format("tipos de datos incompatibles. Se esperaba: entero; se encontro:%s.",typeName.get(ans3.second)));                        
+                        semanticError(line, col, String.format(" tipos de datos incompatibles. Se esperaba: entero; se encontro:%s.",typeName.get(ans3.second)));                        
                     }
                     inc = (int) ans3.first;
                 }
