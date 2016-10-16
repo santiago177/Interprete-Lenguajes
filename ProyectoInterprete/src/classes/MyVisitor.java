@@ -1171,7 +1171,14 @@ public class MyVisitor<T> extends PSeintBaseVisitor<T> {
                         //System.out.println(ctx.step().expr().getText());
                         int line = ctx.step().expr().start.getLine();
                         int col = ctx.step().expr().start.getCharPositionInLine()+1;
-                        semanticError(line, col, String.format(" tipos de datos incompatibles. Se esperaba: entero; se encontro: %s.",typeName.get(ans3.second)));                        
+                        String id = (String)ctx.oasig().idxorv().ID().getText();                    
+                        HashMap<String, Symbol> table = tables.peek(); 
+                        Symbol sy = table.get(id);
+                        if( sy.type.equals("real") ){
+                            semanticError(line, col, String.format(" tipos de datos incompatibles. Se esperaba: entero o real; se encontro: %s.",typeName.get(ans3.second)));                        
+                        }else{
+                            semanticError(line, col, String.format(" tipos de datos incompatibles. Se esperaba: entero; se encontro: %s.",typeName.get(ans3.second)));                        
+                        }
                     }
                     inc = (int) ans3.first;
                 }
